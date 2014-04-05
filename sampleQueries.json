@@ -1,0 +1,25 @@
+[{
+    "from": "Story",
+    "select": [
+      "Estimate",
+      "Name",
+      "Scope.Name", {
+        "from":"Owners",
+        "select":"Name"
+      }
+    ],
+    "page": {
+        "start": 0,
+        "size": 5
+    },
+  "where": {
+    "Scope.Name": "FFT Performance/Scale"
+  }
+},{
+  "from": "Member",
+  "select":["Name"],
+  "page": {
+    "start":0,
+    "size":50
+  }
+}]

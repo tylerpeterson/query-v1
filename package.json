@@ -1,0 +1,38 @@
+{
+  "name": "query-v1",
+  "version": "0.0.1",
+  "description": "Automated reporting against version one. Stuff I find useful. Nothing more.",
+  "author": "Tyler Peterson <petersontb@familysearch.org>",
+  "dependencies": {
+    "commander": "2.0.0",
+    "OAuth": "0.9.10",
+    "express": "3.4.3",
+    "debug": "~0.7.2",
+    "q": "~0.9.7",
+    "simple-oauth2": "~0.1.7",
+    "superagent": "~0.15.7"
+  },
+  "devDependencies": {
+    "grunt": "0.4.1",
+    "grunt-simple-mocha": "0.4.0",
+    "grunt-contrib-watch": "0.5.3",
+    "chai": "~1.8.0",
+    "mocha": "~1.13.0",
+    "supertest": "0.8.0",
+    "zombie": "~2.0.0",
+    "rewire": "~2.0.0",
+    "sinon": "~1.7.3",
+    "nock": "~0.22.1",
+    "wire": "~0.10.2"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.1.x"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha"
+  },
+  "bin": {
+    "query": "./bin/query"
+  }
+}

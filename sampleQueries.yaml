@@ -1,0 +1,9 @@
+from: Story
+select:
+  - Name
+  - Owners.@Count
+filter:
+  - Owners.@Count>'2'
+page:
+  start: 0
+  size: 2
