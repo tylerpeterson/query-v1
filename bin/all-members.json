@@ -1,0 +1,7 @@
+{
+  "from": "Member",
+  "select": [
+    "Name",
+    "Nickname"
+  ]
+}

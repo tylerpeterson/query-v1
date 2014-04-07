@@ -1,0 +1,24 @@
+{
+  "from": "Task",
+  "select": [
+    "Name",
+    "Number",
+    "Parent.Name",
+    "ToDo",
+    "Status.Name",
+    "ChangeDate",
+    {
+      "from": "Owners",
+      "select": [
+        "Name"
+      ]
+    }
+  ],
+  "filter": [
+    "Owners.Nickname=\"crowtherdr\"",
+    "AssetState=\"Active\""
+  ],
+  "sort": [
+    "+Order"
+  ]
+}

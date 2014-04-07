@@ -7,7 +7,8 @@ var program = require('commander'),
     exec = require('child_process').exec,
     AuthApp = require('../lib/ManualAuthApp'),
     debug = require('debug')('queryBin'),
-    secrets = require('../client_secrets');
+    secrets = require('../client_secrets'),
+    query = require('./tasks-for-owner-example');
 
 var fs = require('fs'),
     Q = require('q'),
@@ -76,23 +77,14 @@ if (refreshTokenPromise.isPending()) {
 
 Q.all([accessTokenPromise, refreshTokenPromise]).spread(function (accessToken, refreshToken) {
   debug('making a test request with bearer token'/*, accessToken*/);
+  debug('query', query);
   request
       .get(serverBaseUri + '/query.v1')
       .set('Authorization', 'Bearer ' + accessToken)
-      .send({
-        from: "Story",
-        select: [
-          "Estimate",
-          "Name"
-        ],
-        page: {
-          start: 0,
-          size: 2
-        }
-      })
+      .send(query)
       .end(function (res) {
           if (res.ok) {
-            debug('successful request!', res.body);
+            debug('successful request!', JSON.stringify(res.body));
           } else {
             debug("failed to get data", res.text);
           }

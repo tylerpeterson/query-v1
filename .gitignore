@@ -9,6 +9,7 @@
 
 # The cached auth tokens -- created after running the app
 .tokens
+cache
 
 # Logs
 logs
