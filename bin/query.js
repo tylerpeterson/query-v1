@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 var program = require('commander'),
-    OAuth2 = require('OAuth').OAuth2,
     http = require('http'),
     express = require('express'),
     exec = require('child_process').exec,
@@ -90,18 +89,3 @@ Q.all([accessTokenPromise, refreshTokenPromise]).spread(function (accessToken, r
           }
       });
 });
-
-
- // var oauth2 = new OAuth2(server.config.keys.twitter.consumerKey,
- //       twitterConsumerSecret,
- //       'https://api.twitter.com/',
- //       null,
- //       'oauth2/token',
- //       null);
- //     oauth2.getOAuthAccessToken(
- //       '',
- //       {'grant_type':'client_credentials'},
- //       function (e, access_token, refresh_token, results){
- //       debug('bearer: ',access_token);
- //       done();
- //     });
