@@ -4,12 +4,11 @@ var program = require('commander'),
     exec = require('child_process').exec,
     AuthApp = require('../lib/ManualAuthApp'),
     debug = require('debug')('queryBin'),
-    secrets = require('../client_secrets'),
+    serverBaseUri = require('../client_secrets').web.server_base_uri,
     query = require('./tasks-for-owner-example');
 
 var fs = require('fs'),
     Q = require('q'),
-    serverBaseUri = secrets.web.server_base_uri,
     request = require('superagent');
 
 program
