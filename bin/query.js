@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 var program = require('commander'),
-    express = require('express'),
     exec = require('child_process').exec,
     AuthApp = require('../lib/ManualAuthApp'),
     debug = require('debug')('queryBin'),
