@@ -4,7 +4,8 @@ var program = require('commander'),
     exec = require('child_process').exec,
     AuthApp = require('../lib/ManualAuthApp'),
     debug = require('debug')('queryBin'),
-    serverBaseUri = require('../client_secrets').web.server_base_uri,
+    secrets = require('../client_secrets'),
+    serverBaseUri = secrets.web.server_base_uri,
     // query = require('./scopes');
     query = require('./backlog');
     // query = require('./tasks-for-owner-example');
@@ -18,7 +19,7 @@ program
   .option('-c, --count [number]', 'specify how many names to emit. default 1', '1')
   .parse(process.argv);
 
-var app = new AuthApp(),
+var app = new AuthApp(secrets),
     url = app.url(),
     tokenPromise = app.tokenPromise(),
     accessTokenDfd = Q.defer(),
