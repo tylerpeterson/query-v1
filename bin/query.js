@@ -3,7 +3,7 @@
 var program = require('commander'),
     exec = require('child_process').exec,
     AuthApp = require('../lib/ManualAuthApp'),
-    debug = require('debug')('queryBin'),
+    debug = require('debug')('query-v1'),
     secrets = require('../client_secrets'),
     serverBaseUri = secrets.web.server_base_uri,
     // query = require('./scopes');
