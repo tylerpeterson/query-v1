@@ -1,0 +1,25 @@
+{
+  "from": "PrimaryWorkitem",
+  "select": [
+    "AssetType",
+    "Name",
+    "Number",
+    "Scope.Name",
+    "Super.Category.Name",
+    {
+      "from": "SuperAndUp",
+      "select": [
+        "Name",
+        "Scope.Name",
+        "AssetType"
+      ]
+    }
+  ],
+  "where": {
+    "Scope.Name": "R-2014-Q2 (Photos & Stories)"
+  },
+  "page": {
+    "start": 0,
+    "size": 25
+  }
+}

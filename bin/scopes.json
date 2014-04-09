@@ -1,0 +1,19 @@
+{
+  "from": "Scope",
+  "select": [
+    "Name",
+    "BeginDate",
+    "Parent.Name"
+  ],
+  "where": {
+    "Parent.Name": "Photos and Stories"
+  },
+  "page": {
+    "start": 0,
+    "size": 50
+  },
+  "sort": [
+    "-BeginDate",
+    "+Order"
+  ]
+}

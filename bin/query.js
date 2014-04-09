@@ -5,7 +5,9 @@ var program = require('commander'),
     AuthApp = require('../lib/ManualAuthApp'),
     debug = require('debug')('queryBin'),
     serverBaseUri = require('../client_secrets').web.server_base_uri,
-    query = require('./tasks-for-owner-example');
+    // query = require('./scopes');
+    query = require('./backlog');
+    // query = require('./tasks-for-owner-example');
 
 var fs = require('fs'),
     Q = require('q'),

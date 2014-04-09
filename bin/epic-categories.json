@@ -1,0 +1,10 @@
+{
+  "from": "EpicCategory",
+  "select": [
+    "Name"
+  ],
+  "page": {
+    "start": 0,
+    "size": 50
+  }
+}

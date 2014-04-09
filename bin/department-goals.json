@@ -1,0 +1,13 @@
+{
+  "from": "Epic",
+  "select": [
+    "Name"
+  ],
+  "where": {
+    "Category.Name": "Department Goal"
+  },
+  "page": {
+    "start": 0,
+    "size": 50
+  }
+}
