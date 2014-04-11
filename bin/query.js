@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
-var program = require('commander'),
+var http = require('http'),
+    express = require('express'),
+    program = require('commander'),
     exec = require('child_process').exec,
     AuthApp = require('../lib/ManualAuthApp'),
     debug = require('debug')('query-v1'),
@@ -19,14 +21,17 @@ program
   .option('-c, --count [number]', 'specify how many names to emit. default 1', '1')
   .parse(process.argv);
 
-var app = new AuthApp(secrets, {appBaseUrl: "http://localhost:8088"}),
-    url = app.url(),
-    tokenPromise = app.tokenPromise(),
+var app = express(),
+    auth = new AuthApp(secrets, {appBaseUrl: "http://localhost:8088", app: app}),
+    server = http.createServer(app),
+    url = auth.url(),
+    tokenPromise = auth.tokenPromise(),
     accessTokenDfd = Q.defer(),
     accessTokenPromise = accessTokenDfd.promise,
     refreshTokenDfd = Q.defer(),
     refreshTokenPromise = refreshTokenDfd.promise;
 
+server.listen(8088);
 
 function storeTokens(tokens) {
   var accessToken = tokens.access_token,
@@ -63,7 +68,7 @@ if (refreshTokenPromise.isPending()) {
   });
 } else {
   refreshTokenPromise.then(function resolved(refreshToken) {
-    var tokensPromise = app.hitTokenUri({refreshToken: refreshToken});
+    var tokensPromise = auth.hitTokenUri({refreshToken: refreshToken});
     tokensPromise.then(function resolved(tokens) {
       debug('successfully refreshed');
       storeTokens(tokens);
