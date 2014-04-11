@@ -19,7 +19,7 @@ program
   .option('-c, --count [number]', 'specify how many names to emit. default 1', '1')
   .parse(process.argv);
 
-var app = new AuthApp(secrets),
+var app = new AuthApp(secrets, {appBaseUrl: "http://localhost:8088"}),
     url = app.url(),
     tokenPromise = app.tokenPromise(),
     accessTokenDfd = Q.defer(),
