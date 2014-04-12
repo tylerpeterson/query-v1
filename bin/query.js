@@ -1,41 +1,41 @@
 #!/usr/bin/env node
 
-var http = require('http'),
-    express = require('express'),
-    program = require('commander'),
-    exec = require('child_process').exec,
-    AuthApp = require('../lib/ManualAuthApp'),
-    debug = require('debug')('query-v1'),
-    secrets = require('../client_secrets'),
-    serverBaseUri = secrets.web.server_base_uri,
-    // query = require('./scopes');
-    query = require('./backlog');
-    // query = require('./tasks-for-owner-example');
+var http = require('http');
+var express = require('express');
+var program = require('commander');
+var exec = require('child_process').exec;
+var AuthApp = require('../lib/ManualAuthApp');
+var debug = require('debug')('query-v1');
+var secrets = require('../client_secrets');
+var serverBaseUri = secrets.web.server_base_uri;
+// var query = require('./scopes');
+// var query = require('./backlog');
+var query = require('./tasks-for-owner-example');
 
-var fs = require('fs'),
-    Q = require('q'),
-    request = require('superagent');
+var fs = require('fs');
+var Q = require('q');
+var request = require('superagent');
 
 program
   .version('0.0.1')
   .option('-c, --count [number]', 'specify how many names to emit. default 1', '1')
   .parse(process.argv);
 
-var app = express(),
-    auth = new AuthApp(secrets, {appBaseUrl: "http://localhost:8088", app: app}),
-    server = http.createServer(app),
-    url = auth.url(),
-    tokenPromise = auth.tokenPromise(),
-    accessTokenDfd = Q.defer(),
-    accessTokenPromise = accessTokenDfd.promise,
-    refreshTokenDfd = Q.defer(),
-    refreshTokenPromise = refreshTokenDfd.promise;
+var app = express();
+var auth = new AuthApp(secrets, {appBaseUrl: "http://localhost:8088", app: app});
+var server = http.createServer(app);
+var url = auth.url();
+var tokenPromise = auth.tokenPromise();
+var accessTokenDfd = Q.defer();
+var accessTokenPromise = accessTokenDfd.promise;
+var refreshTokenDfd = Q.defer();
+var refreshTokenPromise = refreshTokenDfd.promise;
 
 server.listen(8088);
 
 function storeTokens(tokens) {
-  var accessToken = tokens.access_token,
-      refreshToken = tokens.refresh_token;
+  var accessToken = tokens.access_token;
+  var refreshToken = tokens.refresh_token;
 
   debug('storing tokens');
   fs.writeFileSync('.tokens', JSON.stringify({accessToken: accessToken, refreshToken: refreshToken}));
@@ -58,8 +58,8 @@ if (refreshTokenPromise.isPending()) {
   });
 
   tokenPromise.then(function (token) {
-    var accessToken = token.access_token,
-        refreshToken = token.refresh_token;
+    var accessToken = token.access_token;
+    var refreshToken = token.refresh_token;
 
     debug('got a token', token);
     fs.writeFileSync('.tokens', JSON.stringify({accessToken: accessToken, refreshToken: refreshToken}));
