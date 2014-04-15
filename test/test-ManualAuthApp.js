@@ -40,4 +40,28 @@ describe('ManualAuthApp', function () {
       readFile.restore();
     });
   });
+
+  describe('recovering from cache miss', function () {
+    var oldCacheDir;
+
+    beforeEach(function () {
+      oldCacheDir = instance.cacheDirectory;
+      instance.cacheDirectory = oldCacheDir + 'some-directory-that-doesn\'t-exist';
+    });
+
+    it.skip('should use a strategy to obtain auth token', function (done) {
+      // instance.refreshTokenPromise().then(function (refreshToken) {
+      //   try {
+      //     expect(refreshToken).to.equal('access_token_on_disk');
+      //     done();
+      //   } catch (err) {
+      //     done(err);
+      //   }
+      // }, done);
+    });
+
+    afterEach(function () {
+      instance.cacheDirectory = oldCacheDir;
+    });
+  });
 });
