@@ -32,8 +32,8 @@ describe('RefreshTokenMissedStrategy', function () {
 
   describe('RejectPromise version', function () {
     it('should reject the promise for the refresh token', function () {
-      rejectPromise(refreshTokenDfd);
-      expect(refreshTokenPromise.isRejected());
+      rejectPromise({})(refreshTokenDfd);
+      expect(refreshTokenPromise.isRejected()).to.be.true;
     });
   });
 });
