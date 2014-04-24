@@ -5,11 +5,13 @@ var http = require('http');
 var debug = require('debug')('query-v1');
 var exec = require('child_process').exec;
 var expect = require('chai').expect;
+var Browser = require('zombie');
+var creds = require('../user_secrets');
 
 describe('ManualAuthApp', function () {
   it('should issue a request', function (done) {
     // Replaces the bin script as the only way to exercise the flow.
-    this.timeout(25000);
+    this.timeout(15000);
     var app = express();
     var auth = new AuthApp(secrets, {appBaseUrl: "http://localhost:8088", app: app});
     var server = http.createServer(app);
@@ -28,10 +30,19 @@ describe('ManualAuthApp', function () {
     server.listen(8088);
 
     debug("opening web page", url);
-    var browserProcess = exec('open ' + url, function (error, stdout, stderr) {
-      if (error !== null) {
-        debug('error', error);
-      }
+
+    // TODO create an auth token strategy that uses Zombie as below
+
+    var browser = new Browser();
+    browser.visit(url, function () {
+      debug('loaded login page');
+      browser
+          .fill('username', creds.username)
+          .fill('password', creds.password)
+          .pressButton('Login', function () {
+            debug('on authorization page');
+            browser.pressButton('Allow');
+          });
     });
   }); // TODO add another instance verifying what happens when the user denys the token
   // TODO port the test to the new token promise api based on strategies so that the test doesn't launch the browser.
