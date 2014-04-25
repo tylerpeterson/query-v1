@@ -9,11 +9,17 @@ var Browser = require('zombie');
 var creds = require('../user_secrets');
 
 describe('ManualAuthApp', function () {
+  var auth;
+  var app;
+
+  beforeEach(function () {
+    app = express();
+    auth = new AuthApp(secrets, {appBaseUrl: "http://localhost:8088", app: app});
+  });
+
   it('should issue a request', function (done) {
     // Replaces the bin script as the only way to exercise the flow.
     this.timeout(15000);
-    var app = express();
-    var auth = new AuthApp(secrets, {appBaseUrl: "http://localhost:8088", app: app});
     var server = http.createServer(app);
     var url = auth.url();
     var tokenPromise = auth.tokenPromise();
@@ -47,7 +53,13 @@ describe('ManualAuthApp', function () {
   }); // TODO add another instance verifying what happens when the user denys the token
   // TODO port the test to the new token promise api based on strategies so that the test doesn't launch the browser.
 
-  it.skip('should read cached auth tokens', function () {
+  it.skip('should read cached auth tokens', function (done) {
+    // TODO poke token into a cache file
+
+    auth.refreshTokenPromise().then(function (refreshToken) {
+      expect(refreshToken).to.equal('token-on-disk');
+      done();
+    }, done);
     /* TODO
      * generate a temp directory and use it as the cache base
      * poke tokens into the temp dir
