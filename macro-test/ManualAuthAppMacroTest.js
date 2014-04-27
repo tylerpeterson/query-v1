@@ -7,32 +7,35 @@ var exec = require('child_process').exec;
 var expect = require('chai').expect;
 var Browser = require('zombie');
 var creds = require('../user_secrets');
+var temp = require('temp').track();
+var Q = require('q');
+var makeTempDir = Q.denodeify(temp.mkdir);
+var fs = require('fs');
+var path = require('path');
 
 describe('ManualAuthApp', function () {
   var auth;
   var app;
+  var dataDir;
 
   beforeEach(function () {
-    app = express();
-    auth = new AuthApp(secrets, {appBaseUrl: "http://localhost:8088", app: app});
+    return makeTempDir('manual-auth-app-macro-test').then(function (dirPath) {
+      dataDir = dirPath;
+      app = express();
+      auth = new AuthApp(secrets, {appBaseUrl: "http://localhost:8088", app: app, cacheDirectory: dataDir});
+    });
   });
 
-  it('should issue a request', function (done) {
+  afterEach(function () {
+    temp.cleanup();
+  });
+
+  it('should issue a request', function () {
     // Replaces the bin script as the only way to exercise the flow.
     this.timeout(15000);
     var server = http.createServer(app);
     var url = auth.url();
     var tokenPromise = auth.tokenPromise();
-    tokenPromise.then(function (tokens) {
-      expect(tokens).to.have.property('access_token');
-      expect(tokens).to.have.property('refresh_token');
-      expect(tokens).to.have.property('expires_in'); // should be 600
-      expect(tokens).to.have.property('token_type');
-      expect(tokens.token_type).to.equal('bearer');
-      debug('got tokens', tokens);
-      done();
-    }, done);
-
     server.listen(8088);
 
     debug("opening web page", url);
@@ -50,23 +53,25 @@ describe('ManualAuthApp', function () {
             browser.pressButton('Allow');
           });
     });
+
+    return tokenPromise.then(function (tokens) {
+      expect(tokens).to.have.property('access_token');
+      expect(tokens).to.have.property('refresh_token');
+      expect(tokens).to.have.property('expires_in'); // should be 600
+      expect(tokens).to.have.property('token_type');
+      expect(tokens.token_type).to.equal('bearer');
+      debug('got tokens', tokens);
+    });
   }); // TODO add another instance verifying what happens when the user denys the token
   // TODO port the test to the new token promise api based on strategies so that the test doesn't launch the browser.
 
-  it.skip('should read cached auth tokens', function (done) {
-    // TODO poke token into a cache file
+  it('should read cached auth tokens', function () {
+    fs.writeFileSync(path.join(dataDir, '.tokens'), JSON.stringify({
+      refreshToken: 'token-on-disk'
+    }));
 
-    auth.refreshTokenPromise().then(function (refreshToken) {
+    return auth.refreshTokenPromise().then(function (refreshToken) {
       expect(refreshToken).to.equal('token-on-disk');
-      done();
-    }, done);
-    /* TODO
-     * generate a temp directory and use it as the cache base
-     * poke tokens into the temp dir
-     * get a promise for access token and then refresh token
-     * verify they match the poked data.
-     *
-     * Possibly two tests, not one.
-     */
+    });
   });
 });

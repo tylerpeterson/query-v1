@@ -17,13 +17,14 @@
     "grunt-simple-mocha": "0.4.0",
     "grunt-contrib-watch": "0.5.3",
     "chai": "~1.8.0",
-    "mocha": "~1.13.0",
+    "mocha": "~1.18.2",
     "supertest": "0.8.0",
     "zombie": "~2.0.0-alpha31",
     "rewire": "~2.0.0",
     "sinon": "~1.7.3",
     "nock": "~0.22.1",
-    "wire": "~0.10.2"
+    "wire": "~0.10.2",
+    "temp": "~0.7.0"
   },
   "engines": {
     "node": "0.10.x",
