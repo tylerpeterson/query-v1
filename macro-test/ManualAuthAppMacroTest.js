@@ -65,13 +65,25 @@ describe('ManualAuthApp', function () {
   }); // TODO add another instance verifying what happens when the user denys the token
   // TODO port the test to the new token promise api based on strategies so that the test doesn't launch the browser.
 
-  it('should read cached auth tokens', function () {
+  it('should read cached refresh tokens', function () {
     fs.writeFileSync(path.join(dataDir, '.tokens'), JSON.stringify({
       refreshToken: 'token-on-disk'
     }));
 
     return auth.refreshTokenPromise().then(function (refreshToken) {
       expect(refreshToken).to.equal('token-on-disk');
+    });
+  });
+
+  // TODO make this test pass
+  it.skip('should read cached access tokens', function () {
+    fs.writeFileSync(path.join(dataDir, '.tokens'), JSON.stringify({
+      accessToken: 'token-on-disk',
+      expires: '' + (Date.now() + (600 * 1000))
+    }));
+
+    return auth.accessTokenPromise().then(function (accessToken) {
+      expect(accessToken).to.equal('token-on-disk');
     });
   });
 });
