@@ -11,30 +11,41 @@ var v1oauth = require('v1oauth');
 var express = require('express');
 var AuthApp = v1oauth.app;
 var secrets = require('../client_secrets');
-var app = express();
-var auth = new AuthApp(secrets, {appBaseUrl: "http://localhost:8088", secureCookies: false});
 var debug = require('debug')('query-v1');
 var request = require('superagent');
-var serverBaseUri = secrets.web.server_base_uri;
-var url = auth.url();
 var exec = require('child_process').exec;
 var path = require('path');
 var queryObject = require(path.join(__dirname, '../node_modules/sample-v1-queries/scope-state-exploration.json'));
+var Q = require('q');
 
 queryObject.page.size = 1000;
 
-app.use(auth.router);
-app.listen(8088);
+function getToken(secrets) {
+  var app = express();
+  var auth = new AuthApp(secrets, {appBaseUrl: "http://localhost:8088", secureCookies: false});
+  var dfd = Q.defer();
+  var serverBaseUri = secrets.web.server_base_uri;
+  var url = auth.url();
 
-var browserProcess = exec('open ' + url, function (error, stdout, stderr) {
-  if (error !== null) {
-    debug('error', error);
-  }
-});
+  app.use(auth.router);
+  app.listen(8088);
 
-auth.once('refreshToken', function (tokens) {
-  debug('got tokens');
-  var token = tokens.access_token;
+  auth.once('refreshToken', function (tokens) {
+    debug('got tokens');
+    var token = tokens.access_token;
+    dfd.resolve(token);
+  });
+
+  var browserProcess = exec('open ' + url, function (error, stdout, stderr) {
+    if (error !== null) {
+      debug('error', error);
+    }
+  });
+
+  return dfd.promise;
+}
+
+getToken(secrets).then(function (token) {
   request
     .get(serverBaseUri + '/query.v1')
     .set('Authorization', 'Bearer ' + token)
@@ -72,6 +83,5 @@ auth.once('refreshToken', function (tokens) {
         debug("failed to get data", res.text);
       }
     });
-
 });
 
