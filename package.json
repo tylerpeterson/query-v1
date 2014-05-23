@@ -11,7 +11,8 @@
     "q": "~0.9.7",
     "simple-oauth2": "~0.1.7",
     "superagent": "~0.15.7",
-    "sample-v1-queries": "git+https://github.com/tylerpeterson/sample-v1-queries"
+    "sample-v1-queries": "git+https://github.com/tylerpeterson/sample-v1-queries",
+    "v1oauth": "git+https://github.com/tylerpeterson/v1oauth"
   },
   "devDependencies": {
     "grunt": "0.4.1",
