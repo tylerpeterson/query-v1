@@ -10,7 +10,8 @@
     "debug": "~0.7.2",
     "q": "~0.9.7",
     "simple-oauth2": "~0.1.7",
-    "superagent": "~0.15.7"
+    "superagent": "~0.15.7",
+    "sample-v1-queries": "git+https://github.com/tylerpeterson/sample-v1-queries"
   },
   "devDependencies": {
     "grunt": "0.4.1",
