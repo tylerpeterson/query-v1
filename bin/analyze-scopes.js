@@ -4,50 +4,21 @@
 
 /*
    This script tries to focus on just making a query and doing some simiple analysis. The libraries it 
-   uses help somewhat. There is still too much overhead to make a simple query of VersionOne.
+   uses help a bit.
  */
 
-var v1oauth = require('v1oauth');
-var express = require('express');
-var AuthApp = v1oauth.app;
-var secrets = require('../client_secrets');
+var authService = require('v1oauth').authService(require('../client_secrets'));
 var debug = require('debug')('query-v1');
 var request = require('superagent');
-var exec = require('child_process').exec;
 var path = require('path');
 var queryObject = require(path.join(__dirname, '../node_modules/sample-v1-queries/scope-state-exploration.json'));
-var Q = require('q');
 
 queryObject.page.size = 1000;
 
-function getToken(secrets) {
-  var app = express();
-  var auth = new AuthApp(secrets, {appBaseUrl: "http://localhost:8088", secureCookies: false});
-  var dfd = Q.defer();
-  var serverBaseUri = secrets.web.server_base_uri;
-  var url = auth.url();
-
-  app.use(auth.router);
-  app.listen(8088);
-
-  auth.once('refreshToken', function (tokens) {
-    debug('got tokens');
-    var token = tokens.access_token;
-    dfd.resolve(token);
-  });
-
-  var browserProcess = exec('open ' + url, function (error, stdout, stderr) {
-    if (error !== null) {
-      debug('error', error);
-    }
-  });
-
-  return dfd.promise;
-}
-
-getToken(secrets).then(function (token) {
+authService().then(function (tokens) {
+  var token = tokens.access_token;
   request
-    .get(serverBaseUri + '/query.v1')
+    .get(authService.serverBaseUri + '/query.v1')
     .set('Authorization', 'Bearer ' + token)
     .send(queryObject)
     .end(function (res) {
