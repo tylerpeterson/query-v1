@@ -14,6 +14,8 @@ Analyzer.prototype.addRecord = function(record) {
   });
 };
 
+// TODO return string, don't print to debug
+// TODO stream results instead of big string?
 Analyzer.prototype.summary = function() {
   var that = this;
   this.keysToCheck.forEach(function (propName) {

@@ -18,6 +18,8 @@ queryObject.page.size = 1000;
 
 authService().then(function (tokens) {
   var token = tokens.access_token;
+  // TODO get multiple smaller pages of results instead of one big request
+  // TODO be kind and throttle requesting.
   request
     .get(authService.serverBaseUri + '/query.v1')
     .set('Authorization', 'Bearer ' + token)
