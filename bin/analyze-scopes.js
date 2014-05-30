@@ -15,6 +15,43 @@ var queryObject = require(path.join(__dirname, '../node_modules/sample-v1-querie
 
 queryObject.page.size = 1000;
 
+function Analyzer (keysToCheck) {
+  this.keysToCheck = keysToCheck;
+  this.values = {};
+}
+
+Analyzer.prototype.addRecord = function(record) {
+  var that = this;
+  this.keysToCheck.forEach(function (propName) {
+    var propValue = record[propName];
+    that.values[propName] = that.values[propName] || {};
+    that.values[propName][propValue] = (that.values[propName][propValue] || 0) + 1;
+  });
+};
+
+Analyzer.prototype.summary = function() {
+  var that = this;
+  this.keysToCheck.forEach(function (propName) {
+    var allUnique = true;
+    var uniqueValues = 0;
+    Object.keys(that.values[propName]).forEach(function (propValue) {
+      var count = that.values[propName][propValue];
+      if (count > 1) {
+        debug('%s: %s, count: %d', propName, propValue, count);
+        allUnique = false;
+      } else {
+        uniqueValues++;
+      }
+    });
+
+    if (allUnique) {
+      debug('%s: all values were unique', propName);
+    } else {
+      debug('%s: %d unique value(s) omitted', propName, uniqueValues);
+    }
+  });
+};
+
 authService().then(function (tokens) {
   var token = tokens.access_token;
   request
@@ -24,32 +61,13 @@ authService().then(function (tokens) {
     .end(function (res) {
       var names = {};
 
-      if (res.ok) {
-        //debug('successful request!', JSON.stringify(res.body, null, 2));
-        queryObject.select.forEach(function (propName) {
-          var values = {};
-          res.body[0].forEach(function (scope) {
-            var propValue = scope[propName];
-            values[propValue] = (values[propValue] || 0) + 1;
-          });
-          var allUnique = true;
-          var uniqueValues = 0;
-          Object.keys(values).forEach(function (propValue) {
-            var count = values[propValue];
-            if (count > 1) {
-              debug('%s: %s, count: %d', propName, propValue, count);
-              allUnique = false;
-            } else {
-              uniqueValues++;
-            }
-          });
 
-          if (allUnique) {
-            debug('%s: all values were unique', propName);
-          } else {
-            debug('%s: %d unique value(s) omitted', propName, uniqueValues);
-          }
+      if (res.ok) {
+        var analyzer = new Analyzer(queryObject.select.slice());
+        res.body[0].forEach(function (scope) {
+          analyzer.addRecord(scope);
         });
+        analyzer.summary();
       } else {
         debug("failed to get data", res.text);
       }
