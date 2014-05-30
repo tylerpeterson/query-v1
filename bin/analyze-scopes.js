@@ -23,8 +23,6 @@ authService().then(function (tokens) {
     .set('Authorization', 'Bearer ' + token)
     .send(queryObject)
     .end(function (res) {
-      var names = {};
-
       if (res.ok) {
         var analyzer = new Analyzer(queryObject.select.slice());
         res.body[0].forEach(function (scope) {
