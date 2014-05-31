@@ -30,7 +30,7 @@ authService().then(function (tokens) {
         res.body[0].forEach(function (scope) {
           analyzer.addRecord(scope);
         });
-        analyzer.summary();
+        debug(analyzer.summary());
       } else {
         debug("failed to get data", res.text);
       }

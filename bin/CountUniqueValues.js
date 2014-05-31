@@ -1,4 +1,4 @@
-var debug = require('debug')('query-v1');
+var util = require('util');
 
 function Analyzer (keysToCheck) {
   this.keysToCheck = keysToCheck;
@@ -14,17 +14,18 @@ Analyzer.prototype.addRecord = function(record) {
   });
 };
 
-// TODO return string, don't print to debug
 // TODO stream results instead of big string?
 Analyzer.prototype.summary = function() {
   var that = this;
+  var report = '';
+
   this.keysToCheck.forEach(function (propName) {
     var allUnique = true;
     var uniqueValues = 0;
     Object.keys(that.values[propName]).forEach(function (propValue) {
       var count = that.values[propName][propValue];
       if (count > 1) {
-        debug('%s: %s, count: %d', propName, propValue, count);
+        report += util.format("%s: %s, count: %d\n", propName, propValue, count);
         allUnique = false;
       } else {
         uniqueValues++;
@@ -32,11 +33,13 @@ Analyzer.prototype.summary = function() {
     });
 
     if (allUnique) {
-      debug('%s: all values were unique', propName);
+      report += util.format("%s: all values were unique\n", propName);
     } else {
-      debug('%s: %d unique value(s) omitted', propName, uniqueValues);
+      report += util.format("%s: %d unique value(s) omitted\n", propName, uniqueValues);
     }
   });
+
+  return report;
 };
 
 module.exports = Analyzer;
