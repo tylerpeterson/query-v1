@@ -8,11 +8,14 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
+var url = require('url');
+var secrets = require('./client_secrets');
 
 var app = express();
+var port = url.parse(secrets.web.redirect_uris[0]).port;
 
 // all environments
-app.set('port', process.env.PORT || 3000);
+app.set('port', port);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.favicon());
