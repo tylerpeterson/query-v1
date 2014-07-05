@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <table> <!-- TODO use more semantic markup -->
+      <tr><td>_oid</td><td>Name</td><td>NickName</td></tr>
+      <% users.forEach(function (user) {
+          %><tr><td><%= user._oid %></td><td><%= user.Name %></td><td><%= user.Nickname %></td></tr><%
+        }) %>
+    </table>
+  </body>
+</html>

@@ -20,7 +20,7 @@ exports.list = function(req, res){
     .send(query)
     .end(function (queryRes) {
       if (queryRes.ok) {
-        res.send('success!\n' + JSON.stringify(queryRes.body, null, 2));
+        res.render('users', { title: 'All Users', users: queryRes.body[0]});
       } else {
         res.send('failure :-(\n' + queryRes.text);
       }
