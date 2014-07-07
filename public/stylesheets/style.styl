@@ -3,3 +3,13 @@ body
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif
 a
   color: #00B7FF
+
+stripe(even = #fff, odd = #eee)
+  tr
+    background-color odd
+  tr.even
+  tr:nth-child(even)
+    background-color even
+
+table
+  stripe #fff #eee

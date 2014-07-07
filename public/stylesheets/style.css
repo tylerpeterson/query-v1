@@ -5,3 +5,10 @@ body {
 a {
   color: #00b7ff;
 }
+table tr {
+  background-color: #eee;
+}
+table tr.even,
+table tr:nth-child(even) {
+  background-color: #fff;
+}
