@@ -15,7 +15,8 @@
     "v1oauth": "git+https://github.com/tylerpeterson/v1oauth",
     "ejs": "*",
     "stylus": "*",
-    "body-parser": "~1.2.0"
+    "body-parser": "~1.2.0",
+    "nedb": "~0.10.6"
   },
   "devDependencies": {
     "grunt": "0.4.1",
