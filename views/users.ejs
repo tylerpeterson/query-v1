@@ -7,15 +7,18 @@
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
-    <table>
-      <thead>
-        <tr><td>_oid</td><td>Name</td><td>Nickname</td></tr>
-      </thead>
-      <tbody>
-        <% users.forEach(function (user) {
-            %><tr><td><%= user._oid %></td><td><%= user.Name %></td><td><%= user.Nickname %></td></tr><%
-          }) %>
-      </tbody>
-    </table>
+    <form id="allusers" method="post">
+      <table>
+        <thead>
+          <tr><td>_oid</td><td>Name</td><td>Nickname</td><td>Selected?</td></tr>
+        </thead>
+        <tbody>
+          <% users.forEach(function (user) {
+              %><tr><td><%= user._oid %></td><td><%= user.Name %></td><td><%= user.Nickname %></td><td><input type="checkbox" name="selectedUsers" value="<%= user._oid %>"></td></tr><%
+            }) %>
+        </tbody>
+      </table>
+      <input type="submit" value="Submit">
+    </form>
   </body>
 </html>

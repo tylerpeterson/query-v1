@@ -26,3 +26,9 @@ exports.list = function(req, res){
       }
     });
 };
+
+exports.postList = function (req, res) {
+  // TODO persist selection
+  console.log(req.body);
+  res.redirect('/users');
+};
