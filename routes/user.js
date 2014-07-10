@@ -5,6 +5,7 @@ var DataStore = require('nedb');
 var path = require('path');
 var Q = require('q');
 var debug = require('debug')('query-v1');
+var _ = require('lodash');
 
 
 /*\
@@ -44,14 +45,24 @@ exports.list = function(req, res){
     ]
   };
   var token = req.cookies.v1accessToken; // TODO shouldn't read off of the cookie, let v1oauth know that stuff.  
+  var flaggedUsers = Q.ninvoke(users, 'find', {flagged: true});
   request
     .get(serverBaseUri + '/query.v1') // TODO v1oauth should help with this url
     .set('Authorization', 'Bearer ' + token) // TODO v1oauth should help with setting this header
     .send(query)
     .end(function (queryRes) {
       if (queryRes.ok) {
-        // TODO read flagged users and set their check-boxes
-        res.render('users', { title: 'All Users', users: queryRes.body[0]});
+        flaggedUsers.then(function (users) { // TODO handle db err as well
+          var flaggedOids = _.pluck(users, '_oid');
+          res.render('users', { 
+            title: 'All Users', 
+            users: queryRes.body[0], 
+            isChecked: function(oid) {
+              if (_.contains(flaggedOids, oid)) return 'checked';
+              return '';
+            }
+          });
+        });
       } else {
         res.send('failure :-(\n' + queryRes.text);
       }
