@@ -3,6 +3,14 @@ var secrets = require('../client_secrets'); // TODO shouldn't have to require th
 var serverBaseUri = secrets.web.server_base_uri; // TODO shouldn't have to look this up. Use v1oauth.
 var DataStore = require('nedb');
 var path = require('path');
+var Q = require('q');
+var debug = require('debug')('query-v1');
+
+
+/*\
+ * Set up data store
+\*/
+
 var users = new DataStore({
   filename: path.join(__dirname, '..', 'cache', 'users.nedb'),
   autoload: true,
@@ -10,8 +18,14 @@ var users = new DataStore({
     if (err) console.log('error loading user database', err);
   }
 });
-var Q = require('q');
-var debug = require('debug')('query-v1');
+
+users.ensureIndex({fieldName: '_oid', unique: true}, function (err) {
+  if (err) {
+    debug('err indexing db', err);
+  } else {
+    debug('successfully added _oid index');
+  }
+});
 
 /*
  * GET users listing.
