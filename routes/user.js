@@ -19,13 +19,18 @@ var users = new DataStore({
   }
 });
 
-users.ensureIndex({fieldName: '_oid', unique: true}, function (err) {
-  if (err) {
-    debug('err indexing db', err);
-  } else {
-    debug('successfully added _oid index');
-  }
-});
+function indexReporter(indexName) {
+  return function (err) {
+    if (err) {
+      debug('err adding index %s', indexName, err);
+    } else {
+      debug('success adding index %s', indexName);
+    }
+  };
+}
+
+users.ensureIndex({fieldName: '_oid', unique: true}, indexReporter('_oid'));
+users.ensureIndex({fieldName: 'flagged', unique: false, sparse: true}, indexReporter('flagged'));
 
 /*
  * GET users listing.
