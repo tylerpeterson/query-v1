@@ -61,7 +61,7 @@ exports.list = function(req, res){
 
           flaggedOids.forEach(function (_oid) {
             var current = _oidIndex[_oid];
-            
+
             debug('updating %s with %s', _oid, JSON.stringify(current));
             updatePromises.push(Q.ninvoke(users, 'update',
               {
@@ -107,7 +107,8 @@ exports.postList = function (req, res) {
         flagged: false
       }
     }, {
-      upsert: true
+      upsert: false,
+      multi: true
     }));
   req.body.selectedUsers.forEach(function (userOid) {
     upsertPromises.push(Q.ninvoke(users, "update",
