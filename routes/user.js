@@ -71,10 +71,32 @@ exports.list = function(req, res){
 
 exports.postList = function (req, res) {
   var upsertPromises = [];
-  
-  upsertPromises.push(Q.ninvoke(users, 'update', {flagged: true, _oid: {$nin: req.body.selectedUsers}}, {$set: {flagged: false}}, {upsert: true}));
+
+  upsertPromises.push(Q.ninvoke(users, 'update', 
+    {
+      flagged: true,
+      _oid: {
+        $nin: req.body.selectedUsers
+      }
+    }, {
+      $set: {
+        flagged: false
+      }
+    }, {
+      upsert: true
+    }));
   req.body.selectedUsers.forEach(function (userOid) {
-    upsertPromises.push(Q.ninvoke(users, "update", {_oid: userOid}, {$set: {flagged: true, _oid: userOid}}, {upsert: true}));
+    upsertPromises.push(Q.ninvoke(users, "update",
+      {
+        _oid: userOid
+      }, {
+        $set: {
+          flagged: true,
+          _oid: userOid
+        }
+      }, {
+        upsert: true
+      }));
   });
   Q.allSettled(upsertPromises).then(function (states) {
     debug('upsertsDone %s', JSON.stringify(states, null, ' '));
