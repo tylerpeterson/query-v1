@@ -70,8 +70,9 @@ exports.list = function(req, res){
 };
 
 exports.postList = function (req, res) {
-  // TODO unflag those flagged in the DB and not in this post.
   var upsertPromises = [];
+  
+  upsertPromises.push(Q.ninvoke(users, 'update', {flagged: true, _oid: {$nin: req.body.selectedUsers}}, {$set: {flagged: false}}, {upsert: true}));
   req.body.selectedUsers.forEach(function (userOid) {
     upsertPromises.push(Q.ninvoke(users, "update", {_oid: userOid}, {$set: {flagged: true, _oid: userOid}}, {upsert: true}));
   });
