@@ -19,7 +19,7 @@ exports.list = function(req, res){
     ]
   };
   var token = req.cookies.v1accessToken; // TODO shouldn't read off of the cookie, let v1oauth know that stuff.  
-  var flaggedUsersP = Q.ninvoke(users, 'find', {flagged: true});
+  var flaggedOidsP = userService.getFlaggedOids();
   request
     .get(serverBaseUri + '/query.v1') // TODO v1oauth should help with this url
     .set('Authorization', 'Bearer ' + token) // TODO v1oauth should help with setting this header
@@ -29,10 +29,8 @@ exports.list = function(req, res){
         var allUsers = queryRes.body[0];
         var _oidIndex = _.indexBy(allUsers, '_oid');
 
-        return flaggedUsersP.then(function (flaggedUsers) { // TODO handle db err as well
-          var flaggedOids = _.pluck(flaggedUsers, '_oid');
+        flaggedOidsP.then(function (flaggedOids) {
           var updatePromises = [];
-
           flaggedOids.forEach(function (_oid) {
             var current = _oidIndex[_oid];
 
