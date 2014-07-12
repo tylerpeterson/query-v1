@@ -4,7 +4,8 @@ var serverBaseUri = secrets.web.server_base_uri; // TODO shouldn't have to look 
 var Q = require('q');
 var debug = require('debug')('query-v1');
 var _ = require('lodash');
-var users = require('../lib/userService').users;
+var userService = require('../lib/userService');
+var users = userService.users;
 
 /*
  * GET users listing.
@@ -83,19 +84,7 @@ exports.postList = function (req, res) {
       upsert: false,
       multi: true
     }));
-  req.body.selectedUsers.forEach(function (userOid) {
-    upsertPromises.push(Q.ninvoke(users, "update",
-      {
-        _oid: userOid
-      }, {
-        $set: {
-          flagged: true,
-          _oid: userOid
-        }
-      }, {
-        upsert: true
-      }));
-  });
+  upsertPromises = upsertPromises.concat(req.body.selectedUsers.map(userService.flagUserByOid));
   Q.allSettled(upsertPromises).then(function (states) {
     debug('upsertsDone %s', JSON.stringify(states, null, ' '));
     res.redirect('/users');
