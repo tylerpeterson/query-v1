@@ -68,12 +68,9 @@ exports.list = function(req, res){
 };
 
 exports.postList = function (req, res) {
-  var upsertPromises = [];
-
-  upsertPromises.push(userService.unflagUsersExceptByOids(req.body.selectedUsers));
-  upsertPromises = upsertPromises.concat(req.body.selectedUsers.map(userService.flagUserByOid));
-  Q.allSettled(upsertPromises).then(function (states) {
-    debug('upsertsDone %s', JSON.stringify(states, null, ' '));
-    res.redirect('/users');
-  });
+  userService.setFlaggedUsersByOids(req.body.selectedUsers)
+    .then(function (states) {
+      debug('upsertsDone %s', JSON.stringify(states, null, ' '));
+      res.redirect('/users');
+    });
 };
