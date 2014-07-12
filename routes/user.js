@@ -35,17 +35,7 @@ exports.list = function(req, res){
             var current = _oidIndex[_oid];
 
             debug('updating %s with %s', _oid, JSON.stringify(current));
-            updatePromises.push(Q.ninvoke(users, 'update',
-              {
-                _oid: _oid
-              }, {
-                $set: {
-                  Name: current.Name,
-                  Nickname: current.Nickname
-                }
-              }, {
-                upsert: false
-              }));
+            updatePromises.push(userService.updateByOid(current));
           });
           return Q.allSettled(updatePromises).then(function (states) {
             debug('Update promises settled: %s', JSON.stringify(states, null, ' '));
