@@ -70,20 +70,7 @@ exports.list = function(req, res){
 exports.postList = function (req, res) {
   var upsertPromises = [];
 
-  upsertPromises.push(Q.ninvoke(users, 'update', 
-    {
-      flagged: true,
-      _oid: {
-        $nin: req.body.selectedUsers
-      }
-    }, {
-      $set: {
-        flagged: false
-      }
-    }, {
-      upsert: false,
-      multi: true
-    }));
+  upsertPromises.push(userService.unflagUsersExceptByOids(req.body.selectedUsers));
   upsertPromises = upsertPromises.concat(req.body.selectedUsers.map(userService.flagUserByOid));
   Q.allSettled(upsertPromises).then(function (states) {
     debug('upsertsDone %s', JSON.stringify(states, null, ' '));
