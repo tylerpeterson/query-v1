@@ -34,7 +34,7 @@ exports.list = function(req, res){
             var current = _oidIndex[_oid];
 
             debug('updating %s with %s', _oid, JSON.stringify(current));
-            updatePromises.push(userService.updateByOid(current));
+            updatePromises.push(userService.updateNameAndNickByOid(current));
           });
           return Q.allSettled(updatePromises).then(function (states) {
             debug('Update promises settled: %s', JSON.stringify(states, null, ' '));
@@ -55,7 +55,7 @@ exports.list = function(req, res){
 };
 
 exports.postList = function (req, res) {
-  userService.setFlaggedUsersByOids(req.body.selectedUsers)
+  userService.flagUserIffOidInSet(req.body.selectedUsers)
     .then(function (states) {
       debug('upsertsDone %s', JSON.stringify(states, null, ' '));
       res.redirect('/users');
