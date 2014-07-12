@@ -5,7 +5,6 @@ var Q = require('q');
 var debug = require('debug')('query-v1');
 var _ = require('lodash');
 var userService = require('../lib/userService');
-var users = userService.users;
 
 /*
  * GET users listing.
