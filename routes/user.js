@@ -76,9 +76,18 @@ exports.listFlagged = function (req, res) {
     });
 
     v1Query(req, query).end(function (queryRes) {
+      var userData;
+
       if (queryRes.ok) {
-        debug('got flagged users', JSON.stringify(_.flatten(queryRes.body), null, ' '));
-        res.send('success!');
+        userData = _.flatten(queryRes.body)
+        res.render('users', { 
+          title: 'Flagged Users', 
+          users: userData, 
+          isChecked: function(oid) { // TODO sort out whether to show check boxes on both pages
+            if (_.contains(flaggedOids, oid)) return 'checked';
+            return '';
+          }
+        });
       } else {
         res.send('failure. :-(' + queryRes.text);
       }
