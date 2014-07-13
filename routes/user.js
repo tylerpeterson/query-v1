@@ -6,23 +6,28 @@ var debug = require('debug')('query-v1');
 var _ = require('lodash');
 var userService = require('../lib/userService');
 
+function v1Query(req, query) { // TODO shouldn't need the req object
+  var token = req.cookies.v1accessToken; // TODO shouldn't read off of the cookie, let v1oauth know that stuff.  
+
+  return request
+    .get(serverBaseUri + '/query.v1') // TODO v1oauth should help with this url
+    .set('Authorization', 'Bearer ' + token) // TODO v1oauth should help with setting this header
+    .send(query)
+}
+
 /*
  * GET users listing.
  */
 
 exports.list = function(req, res){
-  var query = {
-    from: 'Member',
-    select: [
-      'Name', 'Nickname'
-    ]
-  };
-  var token = req.cookies.v1accessToken; // TODO shouldn't read off of the cookie, let v1oauth know that stuff.  
   var flaggedOidsP = userService.getFlaggedOids();
-  request
-    .get(serverBaseUri + '/query.v1') // TODO v1oauth should help with this url
-    .set('Authorization', 'Bearer ' + token) // TODO v1oauth should help with setting this header
-    .send(query)
+  
+  v1Query(req, {
+      from: 'Member',
+      select: [
+        'Name', 'Nickname'
+      ]
+    })
     .end(function (queryRes) {
       if (queryRes.ok) {
         var allUsers = queryRes.body[0];
@@ -53,6 +58,12 @@ exports.list = function(req, res){
       }
     });
 };
+
+exports.listFlagged = function (req, res) {
+  userService.getFlaggedOids().then(function (flaggedOids) {
+
+  });
+}
 
 exports.postList = function (req, res) {
   userService.flagUserIffOidInSet(req.body.selectedUsers)
