@@ -60,9 +60,32 @@ exports.list = function(req, res){
 };
 
 exports.listFlagged = function (req, res) {
+  debug('listFlagged>');
   userService.getFlaggedOids().then(function (flaggedOids) {
+    debug('getFlaggedOids.then>');
+    var query = flaggedOids.map(function (oid) {
+      return {
+        from: 'Member',
+        select: [
+          'Name', 'Nickname'
+        ],
+        where: {
+          ID: oid
+        }
+      };
+    });
 
+    v1Query(req, query).end(function (queryRes) {
+      if (queryRes.ok) {
+        debug('got flagged users', JSON.stringify(_.flatten(queryRes.body), null, ' '));
+        res.send('success!');
+      } else {
+        res.send('failure. :-(' + queryRes.text);
+      }
+    });
+    debug('getFlaggedOids.then<');
   });
+  debug('listFlagged<');
 }
 
 exports.postList = function (req, res) {

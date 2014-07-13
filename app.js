@@ -45,6 +45,7 @@ app.use(session());
 app.get('/', routes.index);
 app.get('/users', auth.restrict, user.list);
 app.post('/users', auth.restrict, user.postList);
+app.get('/users/flagged', auth.restrict, user.listFlagged);
 
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
