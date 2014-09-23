@@ -140,8 +140,11 @@ exports.listFlaggedTasks = function (req, res) {
             }
             return prev + cur.Name + '(' + cur._oid + ')';
           }, "");
-          
+
           task.ChangeTimeAgo = timeago(new Date(task.ChangeDate));
+
+          task.StatusString = task['Status.Name'] || 'None';
+
           return task;
         });
         debug('flagged user tasks, processed', JSON.stringify(taskData, null, '  '));

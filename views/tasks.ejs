@@ -27,7 +27,7 @@
                 <td><%= task._oid %></td>
                 <td><a href="https://www5.v1host.com/FH-V1/task.mvc/Summary?oidToken=<%= task._oid %>"><%= task.Number %> <%= task.Name %></a></td>
                 <td><%= task.ToDo %></td>
-                <td><%= task["Status.Name"] %></td>
+                <td><%= task.StatusString %></td>
                 <td><%= task.ChangeTimeAgo %></td>
                 <td><a href="https://www5.v1host.com/FH-V1/story.mvc/Summary?oidToken=<%= task["Parent.ID"]._oid%>"><%= task["Parent.Number"] %> <%= task["Parent.Name"] %></a></td>
                 <td><%= task.OwnersString %></td>
