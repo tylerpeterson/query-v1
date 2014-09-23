@@ -12,3 +12,25 @@ table tr.even,
 table tr:nth-child(even) {
   background-color: #fff;
 }
+.tasks-page table.tasks-for-users {
+  table-layout: fixed;
+  width: 108em;
+}
+.tasks-page .tasks-for-users .task-name-column {
+  width: 32em;
+}
+.tasks-page .tasks-for-users .task-todo-column {
+  width: 4em;
+}
+.tasks-page .tasks-for-users .task-status-column {
+  width: 8em;
+}
+.tasks-page .tasks-for-users .task-change-column {
+  width: 8em;
+}
+.tasks-page .tasks-for-users .task-parent-column {
+  width: 32em;
+}
+.tasks-page .tasks-for-users .task-owners-column {
+  width: 16em;
+}

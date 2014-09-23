@@ -5,21 +5,20 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
-  <body>
+  <body class="tasks-page">
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
     <form id="allusers" method="post">
-      <table>
+      <table class="tasks-for-users">
         <thead>
           <tr>
-            <td>ID</td>
-            <td>Name</td>
-            <td>ToDo</td>
-            <td>Status</td>
-            <td>Last Change</td>
-            <td>Parent</td>
-            <td></td>
-            <td>Owners</td>
+            <td class="task-id-column">ID</td>
+            <td class="task-name-column">Name</td>
+            <td class="task-todo-column">ToDo</td>
+            <td class="task-status-column">Status</td>
+            <td class="task-change-column">Last Change</td>
+            <td class="task-parent-column">Parent</td>
+            <td class="task-owners-column">Owners</td>
           </tr>
         </thead>
         <tbody>

@@ -13,3 +13,36 @@ stripe(even = #fff, odd = #eee)
 
 table
   stripe #fff #eee
+
+task-id-column-width = 8em
+task-name-column-width = 32em
+task-todo-column-width = 4em
+task-status-column-width = 8em
+task-change-column-width = 8em
+task-parent-column-width = 32em
+task-owners-column-width = 16em
+tasks-for-users-extra-width = 0em
+tasks-for-users-total-width = task-id-column-width + task-name-column-width + task-todo-column-width + task-status-column-width + task-change-column-width + task-parent-column-width + task-owners-column-width + tasks-for-users-extra-width
+
+.tasks-page
+  table.tasks-for-users
+    table-layout: fixed
+    width: tasks-for-users-total-width
+
+  .tasks-for-users .task-name-column
+    width: task-name-column-width
+
+  .tasks-for-users .task-todo-column
+    width: task-todo-column-width
+
+  .tasks-for-users .task-status-column
+    width: task-status-column-width
+
+  .tasks-for-users .task-change-column
+    width: task-change-column-width
+
+  .tasks-for-users .task-parent-column
+    width: task-parent-column-width
+
+  .tasks-for-users .task-owners-column
+    width: task-owners-column-width
