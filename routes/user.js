@@ -3,6 +3,7 @@ var debug = require('debug')('query-v1');
 var _ = require('lodash');
 var userService = require('../lib/userService');
 var v1Query = require('../lib/v1Query');
+var timeago = require('timeago');
 
 /*
  * GET users listing.
@@ -140,6 +141,7 @@ exports.listFlaggedTasks = function (req, res) {
             return prev + cur.Name + '(' + cur._oid + ')';
           }, "");
           debug('ownerstring: ', task.OwnersString);
+          task.ChangeTimeAgo = timeago(new Date(task.ChangeDate));
           return task;
         });
         debug('flagged user tasks, processed', JSON.stringify(taskData, null, '  '));
