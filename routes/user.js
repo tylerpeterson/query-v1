@@ -86,6 +86,76 @@ exports.listFlagged = function (req, res) {
   debug('listFlagged<');
 }
 
+exports.listFlaggedTasks = function (req, res) {
+  debug('listFlaggedTasks');
+  userService.getFlaggedOids().then(function (flaggedOids) {
+    debug('getFlaggedOids.then>');
+    var query = flaggedOids.map(function (oid) {
+      return {
+        "from": "Task",
+        "select": [
+          "Name",
+          "Number",
+          "Parent.Name",
+          "Parent.Number",
+          "Parent.ID",
+          "ToDo",
+          "Status.Name",
+          "ChangeDate",
+          {
+            "from": "Owners",
+            "select": [
+              "Name",
+              "ID"
+            ]
+          }
+        ],
+        "where": {
+          "Owners.ID": "$memberOid"
+        },
+        "filter": [
+          "AssetState=\"Active\""
+        ],
+        "sort": [
+          "+Order"
+        ],
+        "comments": "change the nickname below to search for tasks assigned to different people.",
+        "with": {
+          "$memberOid": oid
+        }
+      };
+    });
+
+    v1Query(req, query).end(function (queryRes) {
+      var taskData;
+
+      if (queryRes.ok) {
+        taskData = _.flatten(queryRes.body)
+        debug('flagged user tasks', JSON.stringify(taskData, null, '  '));
+        taskData = taskData.map(function (task) {
+          task.OwnersString = task.Owners.reduce(function (prev, cur) {
+            if (prev) {
+              prev += ', ';
+            }
+            return prev + cur.Name + '(' + cur._oid + ')';
+          }, "");
+          debug('ownerstring: ', task.OwnersString);
+          return task;
+        });
+        debug('flagged user tasks, processed', JSON.stringify(taskData, null, '  '));
+        res.render('tasks', { 
+          title: 'Flagged Users\' Tasks' ,
+          tasks: taskData
+        });
+      } else {
+        res.send('failure. :-(' + queryRes.text);
+      }
+    });
+    debug('getFlaggedOids.then<');
+  });
+  debug('listFlaggedTasks<');
+}
+
 exports.postList = function (req, res) {
   userService.flagUserIffOidInSet(req.body.selectedUsers)
     .then(function (states) {

@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <form id="allusers" method="post">
+      <table>
+        <thead>
+          <tr>
+            <td>ID</td>
+            <td>Name</td>
+            <td>ToDo</td>
+            <td>Status</td>
+            <td>Last Change</td>
+            <td>Parent</td>
+            <td></td>
+            <td>Owners</td>
+          </tr>
+        </thead>
+        <tbody>
+          <% tasks.forEach(function (task) { %>
+              <tr>
+                <td><%= task._oid %></td>
+                <td><a href="https://www5.v1host.com/FH-V1/task.mvc/Summary?oidToken=<%= task._oid %>"><%= task.Number %> <%= task.Name %></a></td>
+                <td><%= task.ToDo %></td>
+                <td><%= task["Status.Name"] %></td>
+                <td><%= task.ChangeDate %></td>
+                <td><a href="https://www5.v1host.com/FH-V1/story.mvc/Summary?oidToken=<%= task["Parent.ID"]._oid%>"><%= task["Parent.Number"] %> <%= task["Parent.Name"] %></a></td>
+                <td><%= task.OwnersString %></td>
+              </tr>
+            <% }) %>
+        </tbody>
+      </table>
+      <input type="submit" value="Submit">
+    </form>
+  </body>
+</html>
