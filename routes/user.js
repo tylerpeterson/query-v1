@@ -88,11 +88,12 @@ exports.listFlagged = function (req, res) {
 }
 
 exports.listFlaggedTasks = function (req, res) {
-  debug('listFlaggedTasks');
+  debug('listFlaggedTasks>');
   userService.getFlaggedOids().then(function (flaggedOids) {
     debug('getFlaggedOids.then>');
-    var query = flaggedOids.map(function (oid) {
-      return {
+    var query = [];
+    flaggedOids.forEach(function (oid) {
+      query.push({
         "from": "Task",
         "select": [
           "Name",
@@ -124,33 +125,47 @@ exports.listFlaggedTasks = function (req, res) {
         "with": {
           "$memberOid": oid
         }
-      };
+      });
+      query.push({
+        "from": "Member",
+        "select": [
+          "Name",
+          "Nickname"
+        ],
+        "where": {
+          "ID": oid
+        }
+      });
     });
 
     v1Query(req, query).end(function (queryRes) {
-      var taskData;
+      var taskData = [];
 
       if (queryRes.ok) {
-        taskData = _.flatten(queryRes.body)
+        var results = queryRes.body.slice();
+        while (results.length > 0) {
+          taskData.push({
+            tasks: results.shift().map(function (task) {
+              task.OwnersString = task.Owners.reduce(function (prev, cur) {
+                if (prev) {
+                  prev += ', ';
+                }
+                return prev + cur.Name + '(' + cur._oid + ')';
+              }, "");
+
+              task.ChangeTimeAgo = timeago(new Date(task.ChangeDate));
+
+              task.StatusString = task['Status.Name'] || 'None';
+
+              return task;
+            }),
+            user: results.shift()[0]
+          })
+        }
         debug('flagged user tasks', JSON.stringify(taskData, null, '  '));
-        taskData = taskData.map(function (task) {
-          task.OwnersString = task.Owners.reduce(function (prev, cur) {
-            if (prev) {
-              prev += ', ';
-            }
-            return prev + cur.Name + '(' + cur._oid + ')';
-          }, "");
-
-          task.ChangeTimeAgo = timeago(new Date(task.ChangeDate));
-
-          task.StatusString = task['Status.Name'] || 'None';
-
-          return task;
-        });
-        debug('flagged user tasks, processed', JSON.stringify(taskData, null, '  '));
         res.render('tasks', { 
           title: 'Flagged Users\' Tasks' ,
-          tasks: taskData
+          data: taskData
         });
       } else {
         res.send('failure. :-(' + queryRes.text);
