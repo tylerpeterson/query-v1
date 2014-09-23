@@ -140,7 +140,7 @@ exports.listFlaggedTasks = function (req, res) {
             }
             return prev + cur.Name + '(' + cur._oid + ')';
           }, "");
-          debug('ownerstring: ', task.OwnersString);
+          
           task.ChangeTimeAgo = timeago(new Date(task.ChangeDate));
           return task;
         });
