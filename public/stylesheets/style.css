@@ -14,7 +14,7 @@ table tr:nth-child(even) {
 }
 .tasks-page table.tasks-for-users {
   table-layout: fixed;
-  width: 108em;
+  width: 110em;
 }
 .tasks-page .tasks-for-users .task-name-column {
   width: 32em;
