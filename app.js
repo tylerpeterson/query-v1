@@ -48,7 +48,7 @@ app.get('/users', auth.restrict, user.list);
 app.post('/users', auth.restrict, user.postList);
 app.get('/users/flagged', auth.restrict, user.listFlagged);
 app.get('/users/flagged/tasks', auth.restrict, user.listFlaggedTasks);
-app.get('/timebox', auth.restrict, timebox.listStoriesForTimebox);
+app.use(timebox.getRouter(auth.restrict));
 
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
