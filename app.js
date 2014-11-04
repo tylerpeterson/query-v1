@@ -7,6 +7,7 @@ var express = require('express');
 var routes = require('./routes');
 var user = require('./routes/user');
 var timebox = require('./routes/timebox');
+var scope = require('./routes/scope');
 var http = require('http');
 var path = require('path');
 var url = require('url');
@@ -49,6 +50,7 @@ app.post('/users', auth.restrict, user.postList);
 app.get('/users/flagged', auth.restrict, user.listFlagged);
 app.get('/users/flagged/tasks', auth.restrict, user.listFlaggedTasks);
 app.use(timebox.getRouter(auth.restrict));
+app.use(scope.getRouter(auth.restrict));
 
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
