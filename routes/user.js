@@ -242,55 +242,8 @@ exports.listUserAccessHistory = function (req, res) {
         if (a.moment.isSame(b.moment)) return 0;
         return 1;
       });
-      var today = moment().startOf('day')
-      var histogram = [
-        {
-          earliest: today,
-          boxName: today.format('[Today,] ddd [the] Do'),
-          count: 0
-        }
-      ];
-      for (var x = 1; x < 14; ++x) {
-        var thisMoment = moment().startOf('day').subtract(x, 'days');
-        var boxName;
-        if (thisMoment.day() === 0) continue; // Skip Sundays
-        if (thisMoment.day() === 6) {
-          // Saturday
-          boxName = thisMoment.format("[Weekend of] ddd [the] Do");
-        } else {
-          boxName = thisMoment.format('ddd [the] Do (') + thisMoment.from(histogram[0].earliest) + ')'
-        }
 
-        histogram.push({
-          earliest: thisMoment,
-          boxName: boxName,
-          count: 0
-        });
-      }
-      for (x = 2; x < 14; ++x) {
-        thisMoment = moment().startOf('day').add(1, 'd').subtract(x * 14, 'days')
-        histogram.push({
-          earliest: thisMoment,
-          boxName: util.format('14 days starting %s (%d iterations ago)', thisMoment.format('ll'), x),
-          count: 0
-        });
-      }
-      for (x = 7; x < 13; ++x) {
-        thisMoment = histogram[histogram.length - 1].earliest.clone().subtract(30, 'days');
-        histogram.push({
-          earliest: thisMoment,
-          boxName: util.format('30 days starting %s (%d months ago)', thisMoment.format('ll'), x),
-          count: 0
-        });
-      }
-      for (x = 2; x < 4; ++x) {
-        thisMoment = histogram[histogram.length - 1].earliest.clone().subtract(1, 'y')
-        histogram.push({
-          earliest: thisMoment,
-          boxName: thisMoment.format('[a year starting ] ll'),
-          count: 0
-        });
-      }
+      var histogram = createHistogramBoxes();
 
       var currentHistBox = 0;
       historyData.forEach(function (entry) {
@@ -315,4 +268,57 @@ exports.listUserAccessHistory = function (req, res) {
       res.send('failure. :-(' + queryRes.text);
     }
   });
+}
+
+function createHistogramBoxes() {
+  var today = moment().startOf('day')
+  var histogram = [
+    {
+      earliest: today,
+      boxName: today.format('[Today,] ddd [the] Do'),
+      count: 0
+    }
+  ];
+  for (var x = 1; x < 14; ++x) {
+    var thisMoment = moment().startOf('day').subtract(x, 'days');
+    var boxName;
+    if (thisMoment.day() === 0) continue; // Skip Sundays
+    if (thisMoment.day() === 6) {
+      // Saturday
+      boxName = thisMoment.format("[Weekend of] ddd [the] Do");
+    } else {
+      boxName = thisMoment.format('ddd [the] Do (') + thisMoment.from(histogram[0].earliest) + ')'
+    }
+
+    histogram.push({
+      earliest: thisMoment,
+      boxName: boxName,
+      count: 0
+    });
+  }
+  for (x = 2; x < 14; ++x) {
+    thisMoment = moment().startOf('day').add(1, 'd').subtract(x * 14, 'days')
+    histogram.push({
+      earliest: thisMoment,
+      boxName: util.format('14 days starting %s (%d iterations ago)', thisMoment.format('ll'), x),
+      count: 0
+    });
+  }
+  for (x = 7; x < 13; ++x) {
+    thisMoment = histogram[histogram.length - 1].earliest.clone().subtract(30, 'days');
+    histogram.push({
+      earliest: thisMoment,
+      boxName: util.format('30 days starting %s (%d months ago)', thisMoment.format('ll'), x),
+      count: 0
+    });
+  }
+  for (x = 2; x < 4; ++x) {
+    thisMoment = histogram[histogram.length - 1].earliest.clone().subtract(1, 'y')
+    histogram.push({
+      earliest: thisMoment,
+      boxName: thisMoment.format('[a year starting ] ll'),
+      count: 0
+    });
+  } 
+  return histogram; 
 }
