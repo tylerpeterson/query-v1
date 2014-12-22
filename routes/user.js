@@ -195,13 +195,9 @@ exports.listUserAccessHistory = function (req, res) {
       "from": "Member",
       "select": [
         "Name",
-        "Username",
-        "Nickname",
         {
           "from": "Activity",
           "select": [
-            "UserAgent",
-            "ChangeDate",
             {
               "from": "History",
               "select": [
