@@ -20,10 +20,11 @@
       <% data.forEach(function (historyEntry) {
         console.log('historyEntry', historyEntry); %>
         <tr>
-          <td><%= historyEntry.ChangeDate %></td>
-          <td><%= historyEntry.UserAgent %></td>
+          <td><%= historyEntry.moment.format('LLLL') %></td>
+          <td><%= historyEntry.agentSummary %></td>
         </tr>
       <% });%>
-    </tbody>
+      </tbody>
+    </table>
   </body>
 </html>

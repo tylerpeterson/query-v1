@@ -4,6 +4,9 @@ var _ = require('lodash');
 var userService = require('../lib/userService');
 var v1Query = require('../lib/v1Query');
 var timeago = require('timeago');
+var moment = require('moment');
+var UAParser = require('ua-parser-js');
+var util = require('util');
 
 /*
  * GET users listing.
@@ -186,6 +189,7 @@ exports.postList = function (req, res) {
 exports.listUserAccessHistory = function (req, res) {
   debug('listAccessHistory> %s', req.params.id);
 
+  var uaParser = new UAParser();
   var query = [
     {
       "from": "Member",
@@ -222,15 +226,27 @@ exports.listUserAccessHistory = function (req, res) {
         var entry = results.shift();
         delete entry["_oid"];
         if (entry.UserAgent === null) {
-          entry.UserAgent = "Probably via API"
+          entry.agentSummary = "Probably via API"
+        } else {
+          uaParser.setUA(entry.UserAgent).getResult();
+          entry.agentSummary = util.format('%s %s on %s', uaParser.getBrowser().name, uaParser.getBrowser().major, uaParser.getOS().name);
         }
+        entry.moment = moment(entry.ChangeDate);
+        debug("Parsed %s as %s", entry.ChangeDate, entry.moment.format());
+        debug("Parsed %s as %s", entry.UserAgent, entry.agentSummary);
+
         historyData.push(entry);
       }
-      debug('user accesses', JSON.stringify(historyData, null, '  '));
+      historyData.sort(function (a, b) {
+        if (a.moment.isAfter(b.moment)) return -1;
+        if (a.moment.isSame(b.moment)) return 0;
+        return 1;
+      });
+      // debug('user accesses', JSON.stringify(historyData, null, '  '));
       res.render('accesses', { 
         title: 'Access History for User' ,
         data: historyData,
-        user: {_oid: queryRes.body[0][0]._oid, Name: queryRes.body[0][0].Name}
+        user: {_oid: queryRes.body[0][0]._oid, Name: queryRes.body[0][0].Name},
       });
     } else {
       res.send('failure. :-(' + queryRes.text);
