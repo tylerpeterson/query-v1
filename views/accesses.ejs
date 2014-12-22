@@ -9,6 +9,24 @@
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
     <h2><a href="https://www5.v1host.com/FH-V1/Member.mvc/Summary?oidToken=<%= user._oid %>"><%= user.Name %></a></h2>
+    <h2>Accesses Summary</h2>
+    <table class="accesses-for-users">
+      <thead>
+        <tr>
+          <td class="access-time-column">Timeframe</td>
+          <td class="access-time-column">Login Count</td>
+        </tr>
+      </thead>
+      <tbody>
+      <% histogram.forEach(function (entry) { %>
+        <tr>
+          <td><%= entry.boxName %></td>
+          <td><%= entry.count %></td>
+        </tr>
+      <% });%>
+      </tbody>
+    </table>
+    <h2>Accesses Details</h2>
     <table class="accesses-for-users">
       <thead>
         <tr>
@@ -17,8 +35,7 @@
         </tr>
       </thead>
       <tbody>
-      <% data.forEach(function (historyEntry) {
-        console.log('historyEntry', historyEntry); %>
+      <% data.forEach(function (historyEntry) { %>
         <tr>
           <td><%= historyEntry.moment.format('LLLL') %></td>
           <td><%= historyEntry.agentSummary %></td>
