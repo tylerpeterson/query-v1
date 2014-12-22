@@ -183,3 +183,57 @@ exports.postList = function (req, res) {
       res.redirect('/users');
     });
 };
+exports.listUserAccessHistory = function (req, res) {
+  debug('listAccessHistory> %s', req.params.id);
+
+  var query = [
+    {
+      "from": "Member",
+      "select": [
+        "Name",
+        "Username",
+        "Nickname",
+        {
+          "from": "Activity",
+          "select": [
+            "UserAgent",
+            "ChangeDate",
+            {
+              "from": "History",
+              "select": [
+                "ChangeDate",
+                "UserAgent"
+              ]
+            }
+          ]
+        }
+      ],
+      "where": {
+        "ID": req.params.id
+      }
+    }
+  ];
+  v1Query(req, query).end(function (queryRes) {
+    var historyData = [];
+
+    if (queryRes.ok) {
+      var results = queryRes.body[0][0]["Activity"][0]["History"].slice();
+      while (results.length > 0) {
+        var entry = results.shift();
+        delete entry["_oid"];
+        if (entry.UserAgent === null) {
+          entry.UserAgent = "Probably via API"
+        }
+        historyData.push(entry);
+      }
+      debug('user accesses', JSON.stringify(historyData, null, '  '));
+      res.render('accesses', { 
+        title: 'Access History for User' ,
+        data: historyData,
+        user: {_oid: queryRes.body[0][0]._oid, Name: queryRes.body[0][0].Name}
+      });
+    } else {
+      res.send('failure. :-(' + queryRes.text);
+    }
+  });
+}

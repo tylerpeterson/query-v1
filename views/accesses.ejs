@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body class="accesses-page">
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <h2><a href="https://www5.v1host.com/FH-V1/Member.mvc/Summary?oidToken=<%= user._oid %>"><%= user.Name %></a></h2>
+    <table class="accesses-for-users">
+      <thead>
+        <tr>
+          <td class="access-time-column">Login Time</td>
+          <td class="user-agent-column">Agent</td>
+        </tr>
+      </thead>
+      <tbody>
+      <% data.forEach(function (historyEntry) {
+        console.log('historyEntry', historyEntry); %>
+        <tr>
+          <td><%= historyEntry.ChangeDate %></td>
+          <td><%= historyEntry.UserAgent %></td>
+        </tr>
+      <% });%>
+    </tbody>
+  </body>
+</html>
