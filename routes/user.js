@@ -188,6 +188,7 @@ exports.postList = function (req, res) {
 };
 
 function historyQuery(oid) {
+  debug('historyQuery>', oid);
   return {
     "from": "Member",
     "select": [
@@ -209,6 +210,31 @@ function historyQuery(oid) {
       "ID": oid
     }
   };
+}
+
+exports.listFlaggedAccessHistories = function (req, res) {
+  debug('listFlaggedAccessHistories>');
+  userService.getFlaggedOids().then(function (flaggedOids) {
+    debug('getFlaggedOids.then>', flaggedOids);
+    var query = flaggedOids.map(historyQuery);
+
+    debug('getFlaggedOids.then>2');
+    v1Query(req, query).end(function (queryRes) {
+      debug('v1Query.end>');
+      if (queryRes.ok) {
+        var viewData = {
+          data: queryRes.body.map(processMemberResultIntoViewData)
+        }
+
+        viewData.title = 'See Access History of Flagged Users';
+        debug('flagged user histories', JSON.stringify(viewData, null, '  '));
+        res.render('flaggedAccesses', viewData);
+      } else {
+        res.send('failure. :-(' + queryRes.text);
+      }
+    });
+    debug('getFlaggedOids.then<');
+  });
 }
 
 var processMemberActivityHistoryResults = function () {
