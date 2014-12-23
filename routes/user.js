@@ -186,80 +186,104 @@ exports.postList = function (req, res) {
       res.redirect('/users');
     });
 };
+
+function historyQuery(oid) {
+  return {
+    "from": "Member",
+    "select": [
+      "Name",
+      {
+        "from": "Activity",
+        "select": [
+          {
+            "from": "History",
+            "select": [
+              "ChangeDate",
+              "UserAgent"
+            ]
+          }
+        ]
+      }
+    ],
+    "where": {
+      "ID": oid
+    }
+  };
+}
+
+var processMemberActivityHistoryResults = function () {
+  var uaParser = new UAParser();
+
+  return function processMemberActivityHistoryResults(json) {
+    var historyData = [];
+    var results = json[0]["Activity"][0]["History"].slice();
+
+    while (results.length > 0) {
+      var entry = results.shift();
+      delete entry["_oid"];
+      if (entry.UserAgent === null) {
+        entry.agentSummary = "Probably via API"
+      } else {
+        uaParser.setUA(entry.UserAgent).getResult();
+        entry.agentSummary = util.format('%s %s on %s', uaParser.getBrowser().name, uaParser.getBrowser().major, uaParser.getOS().name);
+      }
+      entry.moment = moment(entry.ChangeDate);
+      debug("Parsed %s as %s", entry.ChangeDate, entry.moment.format());
+      debug("Parsed %s as %s", entry.UserAgent, entry.agentSummary);
+
+      historyData.push(entry);
+    }
+    historyData.sort(function (a, b) {
+      if (a.moment.isAfter(b.moment)) return -1;
+      if (a.moment.isSame(b.moment)) return 0;
+      return 1;
+    });
+    return historyData;
+  }
+}();
+
+function createHistogram(historyData) {
+  var histogram = createHistogramBoxes();
+  var currentHistBox = 0;
+
+  historyData.forEach(function (entry) {
+    while (histogram[currentHistBox].earliest.isAfter(entry.moment)) {
+      currentHistBox++;
+      if (currentHistBox === histogram.length) break;
+    }
+    if (currentHistBox < histogram.length) {
+      histogram[currentHistBox].count++;
+    }
+  });
+
+  return histogram;
+}
+
+function processMemberResult(memberJson) {
+  return {_oid: memberJson[0]._oid, Name: memberJson[0].Name};
+}
+
+function processMemberResultIntoViewData(memberJson) {
+  var data = processMemberActivityHistoryResults(memberJson);
+  var viewData = {
+    data: data,
+    histogram: createHistogram(data),
+    user: processMemberResult(memberJson) 
+  };
+  return viewData;
+}
+
 exports.listUserAccessHistory = function (req, res) {
   debug('listAccessHistory> %s', req.params.id);
 
-  var uaParser = new UAParser();
-  var query = [
-    {
-      "from": "Member",
-      "select": [
-        "Name",
-        {
-          "from": "Activity",
-          "select": [
-            {
-              "from": "History",
-              "select": [
-                "ChangeDate",
-                "UserAgent"
-              ]
-            }
-          ]
-        }
-      ],
-      "where": {
-        "ID": req.params.id
-      }
-    }
-  ];
+  var query = [ historyQuery(req.params.id) ];
+
   v1Query(req, query).end(function (queryRes) {
-    var historyData = [];
-
     if (queryRes.ok) {
-      var results = queryRes.body[0][0]["Activity"][0]["History"].slice();
-      while (results.length > 0) {
-        var entry = results.shift();
-        delete entry["_oid"];
-        if (entry.UserAgent === null) {
-          entry.agentSummary = "Probably via API"
-        } else {
-          uaParser.setUA(entry.UserAgent).getResult();
-          entry.agentSummary = util.format('%s %s on %s', uaParser.getBrowser().name, uaParser.getBrowser().major, uaParser.getOS().name);
-        }
-        entry.moment = moment(entry.ChangeDate);
-        debug("Parsed %s as %s", entry.ChangeDate, entry.moment.format());
-        debug("Parsed %s as %s", entry.UserAgent, entry.agentSummary);
+      var viewData = processMemberResultIntoViewData(queryRes.body[0]);
 
-        historyData.push(entry);
-      }
-      historyData.sort(function (a, b) {
-        if (a.moment.isAfter(b.moment)) return -1;
-        if (a.moment.isSame(b.moment)) return 0;
-        return 1;
-      });
-
-      var histogram = createHistogramBoxes();
-
-      var currentHistBox = 0;
-      historyData.forEach(function (entry) {
-        while (histogram[currentHistBox].earliest.isAfter(entry.moment)) {
-          currentHistBox++;
-          if (currentHistBox === histogram.length) break;
-        }
-        if (currentHistBox < histogram.length) {
-          histogram[currentHistBox].count++;
-        }
-      });
-
-      debug('histogram', histogram);
-      // debug('user accesses', JSON.stringify(historyData, null, '  '));
-      res.render('accesses', { 
-        title: 'Access History for User' ,
-        data: historyData,
-        user: {_oid: queryRes.body[0][0]._oid, Name: queryRes.body[0][0].Name},
-        histogram: histogram
-      });
+      viewData.title =  'Access History for User';
+      res.render('accesses', viewData);
     } else {
       res.send('failure. :-(' + queryRes.text);
     }
