@@ -7,8 +7,11 @@
   </head>
   <body>
     <h1><%= title %></h1>
-    <p>(Would you like to see the <a href="/users/flagged">flagged</a> users?)</p>
-    <p>(Would you like to see the flagged users' <a href="/users/flagged/tasks">tasks</a>?)</p>
+    <ul>
+    <li>(Would you like to see the <a href="/users/flagged">flagged</a> users?)</li>
+    <li>(Would you like to see the flagged users' <a href="/users/flagged/tasks">tasks</a>?)</li>
+    <li>(Would you like to see the flagged users' <a href="/users/flagged/accesses">access history</a>?)</li>
+    </ul>
     <p>Welcome to <%= title %></p>
     <form id="allusers" method="post">
       <table>

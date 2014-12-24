@@ -24,7 +24,7 @@
         <tr>
           <td><%= data[0].histogram[i].boxName %></td>
           <% data.forEach(function (userData) { %>
-            <td><%= userData.histogram[i].count %></td>
+            <td><%= userData.histogram[i].countSummary %></td>
           <% }); %>
         </tr>
       <% };%>

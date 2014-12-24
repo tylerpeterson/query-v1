@@ -282,7 +282,31 @@ function createHistogram(historyData) {
     }
   });
 
+  histogram.forEach(function (entry) {
+    entry.countSummary = countToString(entry.count);
+  });
+
   return histogram;
+}
+
+function countToString(count) {
+  var result = '';
+  if (count > 0) {
+    result += count;
+  }
+  while (count > 99) {
+    result += '#';
+    count -= 100;
+  }
+  while (count > 9) {
+    result += '|';
+    count -= 10;
+  }
+  while (count > 0) {
+    result += ':';
+    count--;
+  }
+  return result;
 }
 
 function processMemberResult(memberJson) {
