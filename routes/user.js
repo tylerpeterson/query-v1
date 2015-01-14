@@ -242,7 +242,11 @@ var processMemberActivityHistoryResults = function () {
 
   return function processMemberActivityHistoryResults(json) {
     var historyData = [];
-    var results = json[0]["Activity"][0]["History"].slice();
+    debug("Data", JSON.stringify(json, null, ' '));
+    var results = [];
+    if (json[0]["Activity"].length > 0) {
+      results = json[0]["Activity"][0]["History"].slice();
+    }
 
     while (results.length > 0) {
       var entry = results.shift();
