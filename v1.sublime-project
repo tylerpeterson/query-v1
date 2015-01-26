@@ -1,0 +1,17 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "."
+		},
+		{
+			"follow_symlinks": true,
+			"path": "./node_modules/sample-v1-queries"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "./node_modules/v1oauth"
+		}
+	]
+}
