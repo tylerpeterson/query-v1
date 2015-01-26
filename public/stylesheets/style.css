@@ -34,3 +34,16 @@ table tr:nth-child(even) {
 .tasks-page .tasks-for-users .task-owners-column {
   width: 16em;
 }
+.all-tasks-page table.tasks-for-users {
+  table-layout: fixed;
+  width: 124em;
+}
+.all-tasks-page .tasks-for-users .task-name-column {
+  width: 22em;
+}
+.all-tasks-page .tasks-for-users .task-status-column {
+  width: 12em;
+}
+.all-tasks-page .tasks-for-users .task-change-column {
+  width: 80em;
+}

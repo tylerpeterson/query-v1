@@ -53,6 +53,7 @@ app.get('/user/:id/accesses', auth.restrict, user.listUserAccessHistory);
 app.get('/users/flagged/accesses', auth.restrict, user.listFlaggedAccessHistories);
 app.use(timebox.getRouter(auth.restrict));
 app.use(scope.getRouter(auth.restrict));
+app.get('/user/:id/all-tasks', auth.restrict, user.listAllTasks);
 
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));

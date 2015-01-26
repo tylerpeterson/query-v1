@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body class="all-tasks-page">
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <% console.log(user); %>
+    <h2><a href="https://www5.v1host.com/FH-V1/Member.mvc/Summary?oidToken=<%= user._oid %>"><%= user.Name %></a></h2>
+    <p><%= user.Nickname %>, <%= user._oid %></p>
+    <table class="tasks-for-user">
+      <thead>
+        <tr>
+          <td class="task-id-column">ID</td>
+          <td class="task-name-column">Name</td>
+          <td class="task-status-column">Status</td>
+          <td class="task-change-column">Last Change</td>
+        </tr>
+      </thead>
+      <tbody>
+      <% 
+      tasks.forEach(function (task) {
+        console.log('task', task);
+        var taskId = task._oid;
+        var taskName = task.Name;
+        var status = task["Status.Name"]; 
+        %>
+        <tr>
+          <td><%= task._oid %></td>
+          <td><a href="https://www5.v1host.com/FH-V1/task.mvc/Summary?oidToken=<%= task._oid %>"><%= task.Number %> <%= task.Name %></a></td>
+          <td><%= task['Status.Name'] %></td>
+          <td><%= task.ChangeDate %></td>
+        </tr>
+        <%
+      });
+      %>
+      </tbody>
+    </table>
+  </body>
+</html>

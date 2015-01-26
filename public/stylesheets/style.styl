@@ -46,3 +46,25 @@ tasks-for-users-total-width = task-id-column-width + task-name-column-width + ta
 
   .tasks-for-users .task-owners-column
     width: task-owners-column-width
+
+atask-id-column-width = 10em
+atask-name-column-width = 22em
+atask-status-column-width = 8em
+atask-change-column-width = 8em
+atasks-for-users-extra-width = 0em
+atasks-for-users-total-width = atask-id-column-width + atask-name-column-width + atask-status-column-width + atask-change-column-width + atasks-for-users-extra-width
+
+.all-tasks-page
+  table.tasks-for-users
+    table-layout: fixed
+    width: atasks-for-users-total-width
+
+  .tasks-for-users .task-name-column
+    width: atask-name-column-width
+
+  .tasks-for-users .task-status-column
+    width: atask-status-column-width
+
+  .tasks-for-users .task-change-column
+    width: atask-change-column-width
+

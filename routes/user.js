@@ -90,6 +90,48 @@ exports.listFlagged = function (req, res) {
   debug('listFlagged<');
 }
 
+exports.listAllTasks = function (req, res) {
+  var query = [
+    {
+      "from": "Member",
+      "select": [
+        "Name",
+        "Nickname"
+      ],
+      "where": {
+        "ID": req.params.id
+      }
+    },{
+      "from": "Task",
+      "select": [
+        "Name",
+        "Number",
+        "Status.Name",
+        "ChangeDate"
+      ],
+      "where": {
+        "Owners.ID": req.params.id
+      },
+      "sort": [
+        "-ChangeDate"
+      ]    
+    }];
+
+  debug('listAllTasks');
+  v1Query(req, query).end(function (queryRes) {
+    var viewData = {
+      title: "All Tasks for User"
+    };
+    if (queryRes.ok) {
+      viewData.user = queryRes.body[0][0];
+      viewData.tasks = queryRes.body[1];
+      res.render('all-tasks', viewData);
+    } else {
+      res.send('failure. :-(' + queryRes.text);
+    }
+  });
+}
+
 exports.listFlaggedTasks = function (req, res) {
   debug('listFlaggedTasks>');
   userService.getFlaggedOids().then(function (flaggedOids) {
