@@ -48,7 +48,7 @@ exports.reportByUserId = function (req, res) {
         return {
           label: dayMoment.format('dddd'), // Day of the Week
           labelDetail: dayMoment.format('ll'), // full date
-          clazz: dayMoment.dayOfYear() % 2 === 1 ? 'odd-day' : 'even-day',
+          clazz: classifyDay(dayMoment),
           tasks: dayData.map(function (taskData) {
             var id = normalizeOid(taskData._oid);
             var creation = moment(taskData.CreateDate);
@@ -95,6 +95,13 @@ exports.reportByUserId = function (req, res) {
   });
 }
 
+function classifyDay(dayMoment) {
+  var dow = dayMoment.day();
+  if (dow === 0 /* Sunday */ || dow === 6 /* Saturday */) {
+    return 'holiday'
+  }
+  return dayMoment.dayOfYear() % 2 === 1 ? 'odd-day' : 'even-day'
+}
 function urlToUser(id) {
   return "https://www5.v1host.com/FH-V1/Member.mvc/Summary?oidToken=" + id;
 }
