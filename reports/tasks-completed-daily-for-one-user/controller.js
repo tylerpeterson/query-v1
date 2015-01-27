@@ -33,7 +33,13 @@ exports.reportByUserId = function (req, res) {
   // debug(JSON.stringify(queries, null, ' '));
   v1Query(req, queries).end(function (queryRes) {
     if (queryRes.ok) {
-      ejs.renderFile(templatePath, {locals: {data: JSON.stringify(queryRes.body, null, ' ')}}, function (err, str) {
+      var options = {
+        locals: {
+          user: queryRes.body.shift()[0],
+          data: JSON.stringify(queryRes.body, null, ' ')
+        }
+      }
+      ejs.renderFile(templatePath, options, function (err, str) {
         if (err) {
           debug('err rendering', err);
           res.sent('failure rendering' + err);
