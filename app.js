@@ -54,6 +54,7 @@ app.get('/users/flagged/accesses', auth.restrict, user.listFlaggedAccessHistorie
 app.use(timebox.getRouter(auth.restrict));
 app.use(scope.getRouter(auth.restrict));
 app.get('/user/:id/all-tasks', auth.restrict, user.listAllTasks);
+app.get('/user/:userId/done-tasks', auth.restrict, require('./reports/tasks-completed-daily-for-one-user/controller').reportByUserId);
 
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));

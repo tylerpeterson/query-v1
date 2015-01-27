@@ -438,3 +438,4 @@ function createHistogramBoxes() {
   } 
   return histogram; 
 }
+
