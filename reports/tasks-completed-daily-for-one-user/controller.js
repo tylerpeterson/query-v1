@@ -5,6 +5,7 @@ var userService = require('../../lib/userService');
 var v1Query = require('../../lib/v1Query');
 var timeago = require('timeago');
 var moment = require('moment');
+require('twix');
 var UAParser = require('ua-parser-js');
 var util = require('util');
 var templatePath = require.resolve('./view.ejs');
@@ -14,6 +15,7 @@ exports.reportByUserId = function (req, res) {
   debug('listDailyCompletions', req.params.userId);
   var earliest = moment().subtract(14, 'days');
   var current = moment();
+  var labels = [];
   var queries = [
     {
       from: "Member",
@@ -28,15 +30,55 @@ exports.reportByUserId = function (req, res) {
   ];
   while (current.isAfter(earliest)) {
     queries.push(tasksForADay(req.params.userId, current.format("YYYY-MM-DD")));
+    labels.push(current.clone());
     current.subtract(1, 'days');
   }
   // debug(JSON.stringify(queries, null, ' '));
   v1Query(req, queries).end(function (queryRes) {
     if (queryRes.ok) {
+      var rawUser = queryRes.body.shift()[0];
+      var userId = normalizeOid(rawUser._oid);
+      var user = {
+        url: urlToUser(userId),
+        name: rawUser.Name,
+        nick: rawUser.Nickname
+      };
+      var data = queryRes.body.map(function (dayData, index) {
+        var dayMoment = labels[index];
+        return {
+          label: dayMoment.format('dddd'), // Day of the Week
+          labelDetail: dayMoment.format('ll'), // full date
+          clazz: dayMoment.dayOfYear() % 2 === 1 ? 'odd-day' : 'even-day',
+          tasks: dayData.map(function (taskData) {
+            var id = normalizeOid(taskData._oid);
+            var creation = moment(taskData.CreateDate);
+            var change = moment(taskData.ChangeDate);
+            return {
+              name: taskData.Name,
+              number: taskData.Number,
+              url: "https://www5.v1host.com/FH-V1/task.mvc/Summary?oidToken=" + id,
+              age: creation.from(change, /*show "ago" = */ true),
+              ageDetail: creation.twix(change).format(),
+              collaborators: taskData.Owners.map(function (ownerData) {
+                return {
+                  name: ownerData.Name,
+                  url: urlToUser(normalizeOid(ownerData._oid)),
+                  id: normalizeOid(ownerData._oid)
+                }
+              }).filter(function (collaborator) {
+                return collaborator.id !== userId;
+              }),
+              orig: taskData
+            }
+          })
+        }
+      });
       var options = {
         locals: {
-          user: queryRes.body.shift()[0],
-          data: JSON.stringify(queryRes.body, null, ' ')
+          user: user,
+          data: data,
+          devMode: true,
+          dataString: JSON.stringify(data, null, ' ')
         }
       }
       ejs.renderFile(templatePath, options, function (err, str) {
@@ -53,13 +95,30 @@ exports.reportByUserId = function (req, res) {
   });
 }
 
+function urlToUser(id) {
+  return "https://www5.v1host.com/FH-V1/Member.mvc/Summary?oidToken=" + id;
+}
+
+function normalizeOid(oid) {
+  return oid.split(':').slice(0, 2).join(':')
+}
+
 function tasksForADay(userId, day) {
   return {
     from: "Task",
     select: [
       "Name",
+      "Number",
       "Status.Name",
-      "ChangeDate"
+      "ChangeDate",
+      "CreateDate",
+      {
+        from: "Owners",
+        select: [
+          "Name",
+          "Nickname"
+        ]
+      }
     ],
     where: {
       "Owners.ID": userId,

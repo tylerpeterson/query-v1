@@ -24,6 +24,7 @@
     "stylus": "*",
     "superagent": "~0.15.7",
     "timeago": "~0.1.0",
+    "twix": "^0.6.2",
     "ua-parser-js": "^0.7.3",
     "v1oauth": "git+https://github.com/tylerpeterson/v1oauth"
   },

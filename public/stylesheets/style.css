@@ -47,3 +47,23 @@ table tr:nth-child(even) {
 .all-tasks-page .tasks-for-users .task-change-column {
   width: 8em;
 }
+/*
+ * Styles for the tasks-completed-daily-for-one-user report.
+ */
+table.user-task-cadence tr.even-day {
+  background-color: #dad295;
+}
+table.user-task-cadence tr.even-day.even,
+table.user-task-cadence tr.even-day:nth-child(even) {
+  background-color: #e3ddb0;
+}
+table.user-task-cadence tr.odd-day {
+  background-color: #c2c6b3;
+}
+table.user-task-cadence tr.odd-day.even,
+table.user-task-cadence tr.odd-day:nth-child(even) {
+  background-color: #d1d4c6;
+}
+/*
+ * End styles for the tasks-completed-daily-for-one-user report.
+ */

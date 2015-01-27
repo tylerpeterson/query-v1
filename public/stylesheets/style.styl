@@ -68,3 +68,28 @@ atasks-for-users-total-width = atask-id-column-width + atask-name-column-width +
   .tasks-for-users .task-change-column
     width: atask-change-column-width
 
+
+/*!
+ * Styles for the tasks-completed-daily-for-one-user report.
+ */
+
+table.user-task-cadence
+  $color1 = #dad295
+  $color2 = #c2c6b3
+  $color1a = lighten($color1, 25%)
+  $color2a = lighten($color2, 25%)
+  tr.even-day
+    background-color $color1
+  tr.even-day.even
+  tr.even-day:nth-child(even)
+    background-color $color1a
+  tr.odd-day
+    background-color $color2
+  tr.odd-day.even
+  tr.odd-day:nth-child(even)
+    background-color $color2a
+
+/*!
+ * End styles for the tasks-completed-daily-for-one-user report.
+ */
+

@@ -1,7 +1,50 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>Developer Task Completion Cadence</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
 <body>
-  <h1>Daily completed tasks for <%= user.Name %></h1>
-  <pre><%= data %></pre>
+  <h1>Daily completed tasks for <a href="<%= user.url %>"><%= user.name %></a></h1>
+  <table class="user-task-cadence">
+    <thead>
+      <tr>
+        <td class="user-task-cadence__day-column">Day</td>
+        <td class="user-task-cadence__count-column">Count</td>
+        <td class="user-task-cadence__id-column">ID</td>
+        <td class="user-task-cadence__name-column">Name</td>
+        <td class="user-task-cadence__age-column">Age When Completed</td>
+        <td class="user-task-cadence__collaborators-column">Collaborators</td>
+      </tr>
+    </thead>
+    <tbody>
+      <% data.forEach(function (dayData) {%>
+        <tr class="<%= dayData.clazz %>">
+          <td rowspan=<%= dayData.tasks.length || 1 %>><%= dayData.label %></td>
+          <td rowspan=<%= dayData.tasks.length || 1 %>><%= dayData.tasks.length %></td>
+          <% dayData.tasks.forEach(function (taskData, index) {%>
+            <td><a href="<%= taskData.url %>"><%= taskData.number %></a></td>
+            <td><a href="<%= taskData.url %>"><%= taskData.name %></a></td>
+            <td title="<%- taskData.ageDetail %>"><%= taskData.age %></td>
+            <td>
+              <% taskData.collaborators.forEach(function (collaborator) { %>
+                <a href="<%= collaborator.url %>"><%= collaborator.name %></a>
+              <% }); %>
+            </td>
+            <% if (index < dayData.tasks.length - 1) { %>
+              </tr>
+              <tr class="<%= dayData.clazz %>">
+            <% } %>
+          <% }); %>
+          <% if (dayData.tasks.length === 0) { %>
+            <td></td><td></td><td></td><td></td>
+          <% } %>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+  <% if (devMode) { %>
+    <pre><%= dataString %></pre>
+  <% } %>
 </body>
 </html>
