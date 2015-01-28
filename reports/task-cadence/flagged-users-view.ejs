@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Task Cadence for Flagged Users</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+<body>
+  <h1>Task Cadence for Flagged Users</h1>
+  <table class="flagged-task-cadence">
+    <thead>
+      <tr>
+        <td>Day</td>
+        <td>Developer One</td>
+        <td>Developer Two</td>
+        <td>Developer Three</td>
+        <td>etc...</td>
+        <td>etc...</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Tuesday</td>
+        <td>
+          5 tasks
+        </td>
+        <td>1 task</td>
+        <td>etc.</td>
+        <td>etc...</td>
+      </tr>
+    </tbody>
+  </table>
+  <% if (devMode) { %>
+    <pre><%= dataString %></pre>
+  <% } %>
+</body>
+</html>

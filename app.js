@@ -55,6 +55,7 @@ app.use(timebox.getRouter(auth.restrict));
 app.use(scope.getRouter(auth.restrict));
 app.get('/user/:id/all-tasks', auth.restrict, user.listAllTasks);
 app.get('/user/:userId/done-tasks', auth.restrict, require('./reports/task-cadence/one-user-controller').reportByUserId);
+app.get('/users/flagged/task-cadence', auth.restrict, require('./reports/task-cadence/flagged-users-controller').report);
 
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
