@@ -319,9 +319,11 @@ function createHistogram(historyData) {
   var currentHistBox = 0;
 
   historyData.forEach(function (entry) {
+    if (currentHistBox === histogram.length) return;
+
     while (histogram[currentHistBox].earliest.isAfter(entry.moment)) {
       currentHistBox++;
-      if (currentHistBox === histogram.length) break;
+      if (currentHistBox === histogram.length) return;
     }
     if (currentHistBox < histogram.length) {
       histogram[currentHistBox].count++;
