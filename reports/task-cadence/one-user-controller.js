@@ -8,7 +8,7 @@ var moment = require('moment');
 require('twix');
 var UAParser = require('ua-parser-js');
 var util = require('util');
-var templatePath = require.resolve('./view.ejs');
+var templatePath = require.resolve('./one-user-view.ejs');
 var ejs = require('ejs');
 
 exports.reportByUserId = function (req, res) {
