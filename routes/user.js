@@ -221,6 +221,29 @@ exports.listFlaggedTasks = function (req, res) {
   debug('listFlaggedTasks<');
 }
 
+exports.linksForUser = function (req, res) {
+  v1Query(req, {
+    "from": "Member",
+    "select": [
+      "Name",
+      "Nickname"
+    ],
+    "where": {
+      "ID": req.params.userId
+    }
+  }).end(function (queryRes) {
+    if (queryRes.ok) {
+      debug(JSON.stringify(queryRes.body, null, '  '));
+      res.render('linksForUser', {
+        userId: req.params.userId,
+        title: 'Links for ' + queryRes.body[0][0].Name
+      });      
+    } else {
+      res.send('failure :-(');
+    }
+  });
+};
+
 exports.postList = function (req, res) {
   userService.flagUserIffOidInSet(req.body.selectedUsers)
     .then(function (states) {

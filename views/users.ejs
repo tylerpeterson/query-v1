@@ -22,7 +22,7 @@
           <% users.forEach(function (user) { %>
               <tr>
                 <td><%= user._oid %></td>
-                <td><%= user.Name %></td>
+                <td><a href="/users/<%= user._oid %>"><%= user.Name %></a></td>
                 <td><%= user.Nickname %></td>
                 <td>
                   <input

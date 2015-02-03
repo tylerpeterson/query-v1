@@ -49,6 +49,7 @@ app.get('/users', auth.restrict, user.list);
 app.post('/users', auth.restrict, user.postList);
 app.get('/users/flagged', auth.restrict, user.listFlagged);
 app.get('/users/flagged/tasks', auth.restrict, user.listFlaggedTasks);
+app.get('/users/:userId', auth.restrict, user.linksForUser);
 app.get('/user/:id/accesses', auth.restrict, user.listUserAccessHistory);
 app.get('/users/flagged/accesses', auth.restrict, user.listFlaggedAccessHistories);
 app.use(timebox.getRouter(auth.restrict));
