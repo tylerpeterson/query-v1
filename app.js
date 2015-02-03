@@ -56,6 +56,7 @@ app.use(scope.getRouter(auth.restrict));
 app.get('/user/:id/all-tasks', auth.restrict, user.listAllTasks);
 app.get('/user/:userId/done-tasks', auth.restrict, require('./reports/task-cadence/one-user-controller').reportByUserId);
 app.get('/users/flagged/task-cadence', auth.restrict, require('./reports/task-cadence/flagged-users-controller').report);
+app.get('/user/:userId/cadence/year', auth.restrict, require('./reports/task-cadence/user-year-controller').reportByUserId);
 
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));

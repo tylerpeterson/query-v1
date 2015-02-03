@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>The Year's Task Cadence for <%- user.name %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+<body>
+  <h1>The Year's Task Cadence for <%- user.name %></h1>
+  <table class="user-task-cadence">
+    <thead>
+      <tr>
+        <td class="user-task-cadence__day-column">Day</td>
+        <td class="user-task-cadence__count-column">Count</td>
+        <td>Daily Completion Score</td>
+        <td class="user-task-cadence__id-column">ID</td>
+        <td class="user-task-cadence__name-column">Name</td>
+        <td class="user-task-cadence__age-column">Age When Completed</td>
+        <td class="user-task-cadence__collaborators-column">Collaborators</td>
+      </tr>
+    </thead>
+    <tbody>
+      <% data.forEach(function (dayData) {%>
+        <tr class="<%= dayData.clazz %>">
+          <td rowspan=<%= dayData.rows %> title="<%= dayData.labelDetail %>"><%= dayData.label %></td>
+          <td rowspan=<%= dayData.rows %>><%= dayData.tasks.length %></td>
+          <td rowspan=<%= dayData.rows %>><%= dayData.completionScore %></td>
+          <% dayData.tasks.forEach(function (taskData, index) {%>
+            <td><a href="<%= taskData.url %>"><%= taskData.number %></a></td>
+            <td><a href="<%= taskData.url %>"><%= taskData.name %></a></td>
+            <td title="<%- taskData.ageDetail %>"><%= taskData.age %></td>
+            <td>
+              <% taskData.collaborators.forEach(function (collaborator) { %>
+                <a href="<%= collaborator.url %>"><%= collaborator.name %></a>
+              <% }); %>
+            </td>
+            <% if (index < dayData.tasks.length - 1) { %>
+              </tr>
+              <tr class="<%= dayData.clazz %>">
+            <% } %>
+          <% }); %>
+          <% if (dayData.tasks.length === 0) { %>
+            <td></td><td></td><td></td><td></td>
+          <% } %>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+  <h2>Scores</h2>
+  <ul>
+    <li>Total completion score: <%= summary.completionScore %></li>
+    <li>Total days in interval: <%= summary.totalDays %></li>
+    <li>Mean completion score: <%= summary.averageCompletionScore %></li>
+    <li>Total tasks completed: <%= summary.totalTasks %></li>
+    <li>Mean tasks completed: <%= summary.averageTasksCompleted %></li>
+  </ul>
+  <% if (devMode) { %>
+    <pre><%= dataString %></pre>
+  <% } %>
+</body>
+</html>
