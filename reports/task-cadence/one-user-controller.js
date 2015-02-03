@@ -13,7 +13,7 @@ var ejs = require('ejs');
 
 exports.reportByUserId = function (req, res) {
   debug('listDailyCompletions', req.params.userId);
-  var earliest = moment().subtract(14, 'days');
+  var earliest = moment().subtract(15, 'days');
   var current = moment();
   var labels = [];
   var queries = [
@@ -33,6 +33,11 @@ exports.reportByUserId = function (req, res) {
     labels.push(current.clone());
     current.subtract(1, 'days');
   }
+
+  // Modify the last query to get all tasks completed as of that date so that we can filter out false completions
+  delete queries[queries.length - 1]['filter'];
+  labels.pop();
+
   // debug(JSON.stringify(queries, null, ' '));
   v1Query(req, queries).end(function (queryRes) {
     if (queryRes.ok) {
@@ -43,6 +48,9 @@ exports.reportByUserId = function (req, res) {
         name: rawUser.Name,
         nick: rawUser.Nickname
       };
+
+      removeDuplicates(queryRes.body);
+
       var data = queryRes.body.map(function (dayData, index) {
         var dayMoment = labels[index];
         return {
@@ -73,11 +81,13 @@ exports.reportByUserId = function (req, res) {
           })
         }
       });
+      
+
       var options = {
         locals: {
           user: user,
           data: data,
-          devMode: true,
+          devMode: false,
           dataString: JSON.stringify(data, null, ' ')
         }
       }
@@ -93,6 +103,29 @@ exports.reportByUserId = function (req, res) {
       res.send('failure. :-(' + queryRes.text);
     }
   });
+}
+
+function removeDuplicates(data) {
+  var oldCompletions = _.pluck(data.pop().tasks, 'Number').reduce(function (accumulator, current) {
+    accumulator[current] = true;
+
+    return accumulator;
+  }, {});
+  var i;
+  for (i = data.length - 1; i >= 1; --i) { // Don't do the zeroeth item. That one is different
+    data[i] = _.reject(data[i], function (task) {
+      var num = task.Number;
+      var found = oldCompletions[num];
+
+      oldCompletions[num] = true;
+
+      if (found) {
+        debug('found a duplicate:', num);
+      }
+
+      return found;
+    });
+  }  
 }
 
 function classifyDay(dayMoment) {
