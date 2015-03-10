@@ -5,7 +5,49 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
 <body>
-  <h1>Daily completed tasks for <a href="<%= user.url %>"><%= user.name %></a></h1>
+  <h1>Productivity Cadence Summary for <a href="<%= user.url %>"><%= user.name %></a></h1>
+  <h2>Productivity Scores</h2>
+  <table>
+    <thead>
+      <tr><td>Metric</td><td>Score</td><td>Minimum Standard</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Days With Tasks</td>
+        <td><%= scores.daysWithTasksScore %></td>
+        <td>45%</td>
+      </tr>
+      <tr>
+        <td>Tasks per Day</td>
+        <td><%= scores.meanTasksPerDay %></td>
+        <td>0.85</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Supporting Data</h3>
+  <table>
+    <thead>
+      <tr><td>Measurement</td><td>Value</td><td>Notes</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Work Days</td>
+        <td><%= scores.workDays %></td>
+        <td>Calendar days in the interval minus week-ends and company holidays.</td>
+      </tr>
+      <tr>
+        <td>Total Days with Tasks</td>
+        <td><%= scores.totalDaysWithTasks %></td>
+        <td>Total days in the interval where at least some work was accomplished. Having collaborators may lead to fractional counts.</td>
+      </tr>
+      <tr>
+        <td>Total Tasks</td>
+        <td><%= scores.totalTasks %></td>
+        <td>Total tasks completed in the interval. Having collaborators may lead to fractional counts.</td>
+      </tr>
+    </tbody>
+  </table>
+  <h2>Daily Task Cadence for <a href="<%= user.url %>"><%= user.name %></a></h2>
   <table class="user-task-cadence">
     <thead>
       <tr>

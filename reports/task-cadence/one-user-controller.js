@@ -6,6 +6,7 @@ var v1Query = require('../../lib/v1Query');
 var timeago = require('timeago');
 var moment = require('moment');
 require('twix');
+var numeral = require('numeral');
 var UAParser = require('ua-parser-js');
 var util = require('util');
 var templatePath = require.resolve('./one-user-view.ejs');
@@ -54,11 +55,35 @@ exports.reportByUserId = function (req, res) {
         name: rawUser.Name,
         nick: rawUser.Nickname
       };
+      var scores = {
+        workDays: 0,
+        totalDaysWithTasks: 0,
+        totalTasks: 0,
+        daysWithTasksScore: 0,
+        meanTasksPerDay: 0
+      };
 
       removeDuplicates(queryRes.body);
 
       var data = queryRes.body.map(function (dayData, index) {
         var dayMoment = labels[index];
+        scores.workDays += (function (day) {
+          if (day.isoWeekday() > 5) { // Saturday or Sunday
+            return 0;
+          }
+          if (day.isSame('2015-02-16', 'day') // holidays
+            || day.isSame('2015-01-19', 'day')) {
+            return 0;
+          }
+          return 1;
+        })(dayMoment);
+        scores.totalDaysWithTasks += dayData.reduce(function (prev, cur) {
+          return Math.min(1, prev + 1 / cur.Owners.length);
+        }, 0);
+        scores.totalTasks += dayData.reduce(function (prev, cur) {
+          return prev + 1 / cur.Owners.length;
+        }, 0);
+
         return {
           label: dayMoment.format('ddd (Do)'), // Day of the Week
           labelDetail: dayMoment.format('ll'), // full date
@@ -87,12 +112,16 @@ exports.reportByUserId = function (req, res) {
           })
         }
       });
+
+      scores.daysWithTasksScore = numeral(scores.totalDaysWithTasks / scores.workDays).format('0%');
+      scores.meanTasksPerDay = numeral(scores.totalTasks / scores.workDays).format('0.00');
       
 
       var options = {
         locals: {
           user: user,
           data: data,
+          scores: scores,
           devMode: false,
           dataString: JSON.stringify(data, null, ' ')
         }

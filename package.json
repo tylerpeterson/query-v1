@@ -17,6 +17,7 @@
     "moment": "^2.8.4",
     "morgan": "~1.1.1",
     "nedb": "~0.10.6",
+    "numeral": "^1.5.3",
     "q": "~0.9.7",
     "sample-v1-queries": "git+https://github.com/tylerpeterson/sample-v1-queries",
     "serve-favicon": "~2.0.1",
