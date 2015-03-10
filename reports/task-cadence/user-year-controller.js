@@ -6,8 +6,10 @@ require('twix'); // plugin that modifies moment
 var v1Query = require('../../lib/v1Query');
 var myUtils = require('./utils');
 
-var normalizeOid = myUtils.normalizeOid;
+var classifyDay = myUtils.classifyDay;
 var tasksForADay = myUtils.tasksForADay;
+var urlToUser = myUtils.urlToUser;
+var normalizeOid = myUtils.normalizeOid;
 
 exports.reportByUserId = function (req, res) {
   debug('taskCadenceForFlagged', req.params.userId);
@@ -110,14 +112,4 @@ exports.reportByUserId = function (req, res) {
   });
 }
 
-function classifyDay(dayMoment) {
-  var dow = dayMoment.day();
-  if (dow === 0 /* Sunday */ || dow === 6 /* Saturday */) {
-    return 'holiday'
-  }
-  return dayMoment.dayOfYear() % 2 === 1 ? 'odd-day' : 'even-day'
-}
-function urlToUser(id) {
-  return "https://www5.v1host.com/FH-V1/Member.mvc/Summary?oidToken=" + id;
-}
 

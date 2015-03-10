@@ -10,6 +10,12 @@ var UAParser = require('ua-parser-js');
 var util = require('util');
 var templatePath = require.resolve('./one-user-view.ejs');
 var ejs = require('ejs');
+var myUtils = require('./utils');
+
+var classifyDay = myUtils.classifyDay;
+var tasksForADay = myUtils.tasksForADay;
+var urlToUser = myUtils.urlToUser;
+var normalizeOid = myUtils.normalizeOid;
 
 exports.reportByUserId = function (req, res) {
   debug('listDailyCompletions', req.params.userId);
@@ -128,48 +134,3 @@ function removeDuplicates(data) {
   }  
 }
 
-function classifyDay(dayMoment) {
-  var dow = dayMoment.day();
-  if (dow === 0 /* Sunday */ || dow === 6 /* Saturday */) {
-    return 'holiday'
-  }
-  return dayMoment.dayOfYear() % 2 === 1 ? 'odd-day' : 'even-day'
-}
-function urlToUser(id) {
-  return "https://www5.v1host.com/FH-V1/Member.mvc/Summary?oidToken=" + id;
-}
-
-function normalizeOid(oid) {
-  return oid.split(':').slice(0, 2).join(':')
-}
-
-function tasksForADay(userId, day) {
-  return {
-    from: "Task",
-    select: [
-      "Name",
-      "Number",
-      "Status.Name",
-      "ChangeDate",
-      "CreateDate",
-      {
-        from: "Owners",
-        select: [
-          "Name",
-          "Nickname"
-        ]
-      }
-    ],
-    where: {
-      "Owners.ID": userId,
-      "Status.Name": "Completed"
-    },
-    filter: [
-      "ChangeDate>'" + day + "T00:00:00'"
-    ],
-    sort: [
-      "-ChangeDate"
-    ],
-    asof: day + "T23:59:59"
-  };
-}
