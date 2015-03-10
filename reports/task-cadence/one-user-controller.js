@@ -60,7 +60,7 @@ exports.reportByUserId = function (req, res) {
       var data = queryRes.body.map(function (dayData, index) {
         var dayMoment = labels[index];
         return {
-          label: dayMoment.format('dddd'), // Day of the Week
+          label: dayMoment.format('ddd, D MMM'), // Day of the Week
           labelDetail: dayMoment.format('ll'), // full date
           clazz: classifyDay(dayMoment),
           tasks: dayData.map(function (taskData) {
