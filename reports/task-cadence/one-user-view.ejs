@@ -20,7 +20,7 @@
     <tbody>
       <% data.forEach(function (dayData) {%>
         <tr class="<%= dayData.clazz %>">
-          <td rowspan=<%= dayData.tasks.length || 1 %>><%= dayData.label %></td>
+          <td rowspan=<%= dayData.tasks.length || 1 %> title="<%- dayData.labelDetail %>"><%= dayData.label %></td>
           <td rowspan=<%= dayData.tasks.length || 1 %>><%= dayData.tasks.length %></td>
           <% dayData.tasks.forEach(function (taskData, index) {%>
             <td><a href="<%= taskData.url %>"><%= taskData.number %></a></td>
