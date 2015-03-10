@@ -7,11 +7,15 @@
 		},
 		{
 			"follow_symlinks": true,
-			"path": "./node_modules/sample-v1-queries"
+			"path": "node_modules/sample-v1-queries"
 		},
 		{
 			"follow_symlinks": true,
-			"path": "./node_modules/v1oauth"
+			"path": "node_modules/v1oauth"
+		},
+		{
+			"follow_symlinks": true,
+			"path": "/Users/petersontb/sandbox/fs-projects/360s"
 		}
 	]
 }
