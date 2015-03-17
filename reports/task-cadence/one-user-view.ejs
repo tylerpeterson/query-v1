@@ -56,6 +56,7 @@
         <td class="user-task-cadence__id-column">ID</td>
         <td class="user-task-cadence__name-column">Name</td>
         <td class="user-task-cadence__age-column">Age When Completed</td>
+        <td>Task Estimate</td>
         <td class="user-task-cadence__collaborators-column">Collaborators</td>
       </tr>
     </thead>
@@ -68,6 +69,7 @@
             <td><a href="<%= taskData.url %>"><%= taskData.number %></a></td>
             <td><a href="<%= taskData.url %>"><%= taskData.name %></a></td>
             <td title="<%- taskData.ageDetail %>"><%= taskData.age %></td>
+            <td><%= taskData.taskEstimate %></td>
             <td>
               <% taskData.collaborators.forEach(function (collaborator) { %>
                 <a href="<%= collaborator.url %>"><%= collaborator.name %></a>
@@ -79,7 +81,7 @@
             <% } %>
           <% }); %>
           <% if (dayData.tasks.length === 0) { %>
-            <td></td><td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td><td></td>
           <% } %>
         </tr>
       <% }); %>

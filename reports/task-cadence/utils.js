@@ -11,6 +11,7 @@ exports.tasksForADay = function (userId, day) {
       "Status.Name",
       "ChangeDate",
       "CreateDate",
+      "DetailEstimate",
       {
         from: "Owners",
         select: [

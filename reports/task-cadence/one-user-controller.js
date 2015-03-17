@@ -98,6 +98,7 @@ exports.reportByUserId = function (req, res) {
               url: "https://www5.v1host.com/FH-V1/task.mvc/Summary?oidToken=" + id,
               age: creation.from(change, /*show "ago" = */ true),
               ageDetail: creation.twix(change).format(),
+              taskEstimate: taskData.DetailEstimate || "None",
               collaborators: taskData.Owners.map(function (ownerData) {
                 return {
                   name: ownerData.Name,
@@ -115,6 +116,8 @@ exports.reportByUserId = function (req, res) {
 
       scores.daysWithTasksScore = numeral(scores.totalDaysWithTasks / scores.workDays).format('0%');
       scores.meanTasksPerDay = numeral(scores.totalTasks / scores.workDays).format('0.00');
+      scores.totalDaysWithTasks = numeral(scores.totalDaysWithTasks).format('0.00');
+      scores.totalTasks = numeral(scores.totalTasks).format('0.00');
       
 
       var options = {
