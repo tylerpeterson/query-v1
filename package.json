@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "Automated reporting against version one. Stuff I find useful. Nothing more.",
   "author": "Tyler Peterson <petersontb@familysearch.org>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tylerpeterson/query-v1.git"
+  },
   "dependencies": {
     "body-parser": "~1.2.2",
     "commander": "2.0.0",
