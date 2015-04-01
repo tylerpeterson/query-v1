@@ -20,10 +20,13 @@ var methodOverride = require('method-override');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var errorHandler = require('errorhandler');
+var debug = require('debug')('query-v1');
 
 var app = express();
 var port = url.parse(secrets.web.redirect_uris[0]).port;
 var auth = new AuthApp(secrets, {appBaseUrl: appBaseFromSecrets(secrets), secureCookies: false});
+
+debug('binding to port', port);
 
 // TODO push this kind of helper into v1oauth
 function appBaseFromSecrets(secrets) {
