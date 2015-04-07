@@ -23,7 +23,7 @@ var errorHandler = require('errorhandler');
 var debug = require('debug')('query-v1');
 
 var app = express();
-var port = process.env.PORT || url.parse(secrets.web.redirect_uris[0]).port;
+var port = process.env.V1_OAUTH_SECRETS_FROM_FILE && url.parse(secrets.web.redirect_uris[0]).port || process.env.PORT;
 var auth = new AuthApp(secrets, {appBaseUrl: appBaseFromSecrets(secrets), secureCookies: false});
 
 debug('binding to port', port);
