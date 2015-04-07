@@ -132,7 +132,7 @@ exports.reportByUserId = function (req, res) {
       ejs.renderFile(templatePath, options, function (err, str) {
         if (err) {
           debug('err rendering', err);
-          res.sent('failure rendering' + err);
+          res.send('failure rendering' + err);
         } else {
           res.send(str);
         }
