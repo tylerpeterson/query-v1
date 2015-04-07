@@ -35,8 +35,8 @@ exports.reportByUserId = function (req, res) {
     current.subtract(1, 'days');
   }
   // debug(JSON.stringify(queries, null, ' '));
-  v1Query(req, queries).end(function (queryRes) {
-    if (queryRes.ok) {
+  v1Query(req, queries).end(function (err, queryRes) {
+    if (!err) {
       var rawUser = queryRes.body.shift()[0];
       var userId = normalizeOid(rawUser._oid);
       var user = {

@@ -18,8 +18,8 @@ exports.listStoriesForScope = function (req, res, next) {
   debug('scopeId', scopeId);
   debug('query', query);
   v1Query(req, query)
-    .end(function (queryRes) {
-      if (queryRes.ok) {
+    .end(function (err, queryRes) {
+      if (!err) {
         debug(JSON.stringify(queryRes.body, null, ' '));
         var scopes = queryRes.body[0];
         var query = scopes.map(function (scope) {
@@ -42,8 +42,8 @@ exports.listStoriesForScope = function (req, res, next) {
           };
         });
         debug('second query', query);
-        v1Query(req, query).end(function (queryRes) {
-          if (queryRes.ok) {
+        v1Query(req, query).end(function (err, queryRes) {
+          if (!err) {
             var stories = _.flatten(queryRes.body, true);
             var backlogs = _.groupBy(stories, function (story) {
               return story.Team._oid;

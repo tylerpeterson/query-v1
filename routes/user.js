@@ -21,34 +21,35 @@ exports.list = function(req, res){
         'Name', 'Nickname'
       ]
     })
-    .end(function (queryRes) {
-      if (queryRes.ok) {
-        var allUsers = queryRes.body[0];
-        var _oidIndex = _.indexBy(allUsers, '_oid');
+    .end(function (err, queryRes) {
+      if (err) {
+        res.send('failure :-(\n' + queryRes.text);
+        return;
+      }
 
-        flaggedOidsP.then(function (flaggedOids) {
-          var updatePromises = [];
-          flaggedOids.forEach(function (_oid) {
-            var current = _oidIndex[_oid];
+      var allUsers = queryRes.body[0];
+      var _oidIndex = _.indexBy(allUsers, '_oid');
 
-            debug('updating %s with %s', _oid, JSON.stringify(current));
-            updatePromises.push(userService.updateNameAndNickByOid(current));
-          });
-          return Q.allSettled(updatePromises).then(function (states) {
-            debug('Update promises settled: %s', JSON.stringify(states, null, ' '));
-            res.render('users', { 
-              title: 'All Users', 
-              users: allUsers, 
-              isChecked: function(oid) {
-                if (_.contains(flaggedOids, oid)) return 'checked';
-                return '';
-              }
-            });
+      flaggedOidsP.then(function (flaggedOids) {
+        var updatePromises = [];
+        flaggedOids.forEach(function (_oid) {
+          var current = _oidIndex[_oid];
+
+          debug('updating %s with %s', _oid, JSON.stringify(current));
+          updatePromises.push(userService.updateNameAndNickByOid(current));
+        });
+        return Q.allSettled(updatePromises).then(function (states) {
+          debug('Update promises settled: %s', JSON.stringify(states, null, ' '));
+          res.render('users', { 
+            title: 'All Users', 
+            users: allUsers, 
+            isChecked: function(oid) {
+              if (_.contains(flaggedOids, oid)) return 'checked';
+              return '';
+            }
           });
         });
-      } else {
-        res.send('failure :-(\n' + queryRes.text);
-      }
+      });
     });
 };
 
@@ -68,10 +69,10 @@ exports.listFlagged = function (req, res) {
       };
     });
 
-    v1Query(req, query).end(function (queryRes) {
+    v1Query(req, query).end(function (err, queryRes) {
       var userData;
 
-      if (queryRes.ok) {
+      if (!err) {
         userData = _.flatten(queryRes.body)
         res.render('users', { 
           title: 'Flagged Users', 
@@ -118,11 +119,11 @@ exports.listAllTasks = function (req, res) {
     }];
 
   debug('listAllTasks');
-  v1Query(req, query).end(function (queryRes) {
+  v1Query(req, query).end(function (err, queryRes) {
     var viewData = {
       title: "All Tasks for User"
     };
-    if (queryRes.ok) {
+    if (!err) {
       viewData.user = queryRes.body[0][0];
       viewData.tasks = queryRes.body[1];
       res.render('all-tasks', viewData);
@@ -183,10 +184,10 @@ exports.listFlaggedTasks = function (req, res) {
       });
     });
 
-    v1Query(req, query).end(function (queryRes) {
+    v1Query(req, query).end(function (err, queryRes) {
       var taskData = [];
 
-      if (queryRes.ok) {
+      if (!err) {
         var results = queryRes.body.slice();
         while (results.length > 0) {
           taskData.push({
@@ -231,8 +232,8 @@ exports.linksForUser = function (req, res) {
     "where": {
       "ID": req.params.userId
     }
-  }).end(function (queryRes) {
-    if (queryRes.ok) {
+  }).end(function (err, queryRes) {
+    if (!err) {
       debug(JSON.stringify(queryRes.body, null, '  '));
       res.render('linksForUser', {
         userId: req.params.userId,
@@ -284,9 +285,9 @@ exports.listFlaggedAccessHistories = function (req, res) {
     var query = flaggedOids.map(historyQuery);
 
     debug('getFlaggedOids.then>2');
-    v1Query(req, query).end(function (queryRes) {
+    v1Query(req, query).end(function (err, queryRes) {
       debug('v1Query.end>');
-      if (queryRes.ok) {
+      if (!err) {
         var viewData = {
           data: queryRes.body.map(processMemberResultIntoViewData)
         }
@@ -399,8 +400,8 @@ exports.listUserAccessHistory = function (req, res) {
 
   var query = [ historyQuery(req.params.id) ];
 
-  v1Query(req, query).end(function (queryRes) {
-    if (queryRes.ok) {
+  v1Query(req, query).end(function (err, queryRes) {
+    if (!err) {
       var viewData = processMemberResultIntoViewData(queryRes.body[0]);
 
       viewData.title =  'Access History for User';
