@@ -25,10 +25,10 @@ exports.reportByUserId = function (req, res) {
   var labels = [];
   var queries = [
     {
-      from: "Member",
+      from: 'Member',
       select: [
-        "Name",
-        "Nickname"
+        'Name',
+        'Nickname'
       ],
       where: {
         ID: req.params.userId
@@ -36,13 +36,13 @@ exports.reportByUserId = function (req, res) {
     }
   ];
   while (current.isAfter(earliest)) {
-    queries.push(tasksForADay(req.params.userId, current.format("YYYY-MM-DD")));
+    queries.push(tasksForADay(req.params.userId, current.format('YYYY-MM-DD')));
     labels.push(current.clone());
     current.subtract(1, 'days');
   }
 
   // Modify the last query to get all tasks completed as of that date so that we can filter out false completions
-  delete queries[queries.length - 1]['filter'];
+  delete queries[queries.length - 1].filter;
   labels.pop();
 
   // debug(JSON.stringify(queries, null, ' '));
@@ -51,7 +51,7 @@ exports.reportByUserId = function (req, res) {
       res.send('failure. :-(' + queryRes.text);
       return;
     }
-    
+
     var rawUser = queryRes.body.shift()[0];
     var userId = normalizeOid(rawUser._oid);
     var user = {
@@ -75,8 +75,8 @@ exports.reportByUserId = function (req, res) {
         if (day.isoWeekday() > 5) { // Saturday or Sunday
           return 0;
         }
-        if (day.isSame('2015-02-16', 'day') // holidays
-          || day.isSame('2015-01-19', 'day')) {
+        if (day.isSame('2015-02-16', 'day') || // holidays
+            day.isSame('2015-01-19', 'day')) {
           return 0;
         }
         return 1;
@@ -99,48 +99,47 @@ exports.reportByUserId = function (req, res) {
           return {
             name: taskData.Name,
             number: taskData.Number,
-            url: "https://www5.v1host.com/FH-V1/task.mvc/Summary?oidToken=" + id,
+            url: 'https://www5.v1host.com/FH-V1/task.mvc/Summary?oidToken=' + id,
             age: creation.from(change, /*show "ago" = */ true),
             ageDetail: creation.twix(change).format(),
-            taskEstimate: taskData.DetailEstimate || "None",
+            taskEstimate: taskData.DetailEstimate || 'None',
             collaborators: taskData.Owners.map(function (ownerData) {
               return {
                 name: ownerData.Name,
                 url: urlToUser(normalizeOid(ownerData._oid)),
                 id: normalizeOid(ownerData._oid)
-              }
+              };
             }).filter(function (collaborator) {
               return collaborator.id !== userId;
             }),
             orig: taskData
-          }
+          };
         })
-      }
+      };
     });
 
     scores.daysWithTasksScore = numeral(scores.totalDaysWithTasks / scores.workDays).format('0%');
     scores.meanTasksPerDay = numeral(scores.totalTasks / scores.workDays).format('0.00');
     scores.totalDaysWithTasks = numeral(scores.totalDaysWithTasks).format('0.00');
     scores.totalTasks = numeral(scores.totalTasks).format('0.00');
-    
 
-    var data = {
+    var locals = {
       user: user,
       data: data,
       scores: scores,
       devMode: false,
       dataString: JSON.stringify(data, null, ' ')
     };
-    ejs.renderFile(templatePath, data, {}, function (err, str) {
+    ejs.renderFile(templatePath, locals, {}, function (err, str) {
       if (err) {
         debug('err rendering', err);
         res.send('failure rendering' + err);
       } else {
         res.send(str);
       }
-    })
+    });
   });
-}
+};
 
 function removeDuplicates(data) {
   var oldCompletions = _.pluck(data.pop().tasks, 'Number').reduce(function (accumulator, current) {
@@ -150,18 +149,19 @@ function removeDuplicates(data) {
   }, {});
   var i;
   for (i = data.length - 1; i >= 1; --i) { // Don't do the zeroeth item. That one is different
-    data[i] = _.reject(data[i], function (task) {
-      var num = task.Number;
-      var found = oldCompletions[num];
+    data[i] = _.reject(data[i], filterFunction);
+  }
+  function filterFunction(task) {
+    var num = task.Number;
+    var found = oldCompletions[num];
 
-      oldCompletions[num] = true;
+    oldCompletions[num] = true;
 
-      if (found) {
-        debug('found a duplicate:', num);
-      }
+    if (found) {
+      debug('found a duplicate:', num);
+    }
 
-      return found;
-    });
-  }  
+    return found;
+  }
 }
 
