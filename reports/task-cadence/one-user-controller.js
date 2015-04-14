@@ -46,6 +46,7 @@ exports.reportByUserId = function (req, res) {
   labels.pop();
 
   // debug(JSON.stringify(queries, null, ' '));
+  debug('queries: ', queries.length);
   v1Query(req, queries).end(function (err, queryRes) {
     if (err) {
       res.send('failure. :-(' + queryRes.text);
@@ -64,7 +65,9 @@ exports.reportByUserId = function (req, res) {
       totalDaysWithTasks: 0,
       totalTasks: 0,
       daysWithTasksScore: 0,
-      meanTasksPerDay: 0
+      meanTasksPerDay: 0,
+      totalEstimatedHours: 0,
+      meanEstimatedHoursPerDay: 0
     };
 
     removeDuplicates(queryRes.body);
@@ -87,6 +90,20 @@ exports.reportByUserId = function (req, res) {
       scores.totalTasks += dayData.reduce(function (prev, cur) {
         return prev + 1 / cur.Owners.length;
       }, 0);
+      scores.totalEstimatedHours += dayData.reduce(function (prev, cur) {
+        var originalEstimate = cur.DetailEstimate;
+
+        if (originalEstimate === null) {
+          originalEstimate = 2; // Need a default estimate when none is set.
+        } else {
+          originalEstimate = parseInt(originalEstimate);
+        }
+
+        debug('reducing hours', prev, cur.DetailEstimate, cur.Owners.length);
+
+        return prev + (originalEstimate / cur.Owners.length);
+      }, 0);
+      debug('totalEstimatedHours', scores.totalEstimatedHours);
 
       return {
         label: dayMoment.format('ddd (Do)'), // Day of the Week
@@ -120,6 +137,7 @@ exports.reportByUserId = function (req, res) {
 
     scores.daysWithTasksScore = numeral(scores.totalDaysWithTasks / scores.workDays).format('0%');
     scores.meanTasksPerDay = numeral(scores.totalTasks / scores.workDays).format('0.00');
+    scores.meanEstimatedHoursPerDay = numeral(scores.totalEstimatedHours / scores.workDays).format('0.00');
     scores.totalDaysWithTasks = numeral(scores.totalDaysWithTasks).format('0.00');
     scores.totalTasks = numeral(scores.totalTasks).format('0.00');
 

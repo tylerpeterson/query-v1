@@ -22,6 +22,11 @@
         <td><%= scores.meanTasksPerDay %></td>
         <td>0.85</td>
       </tr>
+      <tr>
+        <td>Estimated Hours per Day</td>
+        <td><%= scores.meanEstimatedHoursPerDay %></td>
+        <td>3.10</td>
+      </tr>
     </tbody>
   </table>
   <h3>Supporting Data</h3>
@@ -45,6 +50,11 @@
         <td><%= scores.totalTasks %></td>
         <td>Total tasks completed in the interval. Having collaborators may lead to fractional counts.</td>
       </tr>
+      <tr>
+        <td>Total Estimated Hours</td>
+        <td><%= scores.totalEstimatedHours %></td>
+        <td>The sum of all the original estimated hours for all the tasks completed.</td>
+      </td>
     </tbody>
   </table>
   <h2>Daily Task Cadence for <a href="<%= user.url %>"><%= user.name %></a></h2>
