@@ -9,7 +9,7 @@
 
 <ul>
   <li><a href="/user/<%= userId %>/done-tasks">Task Cadence</a></li>
-  <li><a href="https://www5.v1host.com/FH-V1/Member.mvc/Summary?oidToken=<%= userId %>">V1 User Page</a></li>
+  <li><a href="<%= process.env.V1_OAUTH_SERVER_BASE_URI + '/Member.mvc/Summary?oidToken=' + userId %>">V1 User Page</a></li>
 </ul>
 
 

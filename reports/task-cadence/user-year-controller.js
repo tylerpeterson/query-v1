@@ -68,8 +68,8 @@ exports.reportByUserId = function (req, res) {
             return {
               name: taskData.Name,
               number: taskData.Number,
-              url: "https://www5.v1host.com/FH-V1/task.mvc/Summary?oidToken=" + id,
-              age: creation.from(change, /*show "ago" = */ true),
+              url: process.env.V1_OAUTH_SERVER_BASE_URI + '/task.mvc/Summary?oidToken=' + id,
+              age: creation.from(change, /*show 'ago' = */ true),
               ageDetail: creation.twix(change).format(),
               collaborators: taskData.Owners.map(function (ownerData) {
                 return {

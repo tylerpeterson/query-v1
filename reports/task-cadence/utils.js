@@ -43,6 +43,6 @@ exports.classifyDay = function (dayMoment) {
 }
 
 exports.urlToUser = function (id) {
-  return "https://www5.v1host.com/FH-V1/Member.mvc/Summary?oidToken=" + id;
-}
+  return process.env.V1_OAUTH_SERVER_BASE_URI + '/Member.mvc/Summary?oidToken=' + id;
+};
 

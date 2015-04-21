@@ -28,6 +28,12 @@ var debug = require('debug')('query-v1');
 var redirectUri = secrets.web.redirect_uris[0];
 // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
 
+if (process.env.V1_OAUTH_SECRETS_FROM_FILE) {
+  //jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+  process.env.V1_OAUTH_SERVER_BASE_URI = secrets.web.server_base_uri;
+  // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
+}
+
 var app = express();
 var port = process.env.V1_OAUTH_SECRETS_FROM_FILE && url.parse(redirectUri).port || process.env.PORT;
 var auth = new AuthApp(secrets, {appBaseUrl: appBaseFromSecrets(secrets), secureCookies: false});

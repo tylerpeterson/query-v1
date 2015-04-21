@@ -15,7 +15,7 @@
         <tr>
           <td class="access-time-column">Timeframe</td>
           <% data.forEach(function (userData) { %>
-            <td class="user-column"><a href="https://www5.v1host.com/FH-V1/Member.mvc/Summary?oidToken=<%= userData.user._oid %>"><%= userData.user.Name %></a></td>
+            <td class="user-column"><a href="<%= process.env.V1_OAUTH_SERVER_BASE_URI + '/Member.mvc/Summary?oidToken=' + userData.user._oid %>"><%= userData.user.Name %></a></td>
           <%  });%>
         </tr>
       </thead>
