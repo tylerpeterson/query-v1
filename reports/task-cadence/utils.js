@@ -1,46 +1,46 @@
 exports.normalizeOid = function (oid) {
-  return oid.split(':').slice(0, 2).join(':')
+  return oid.split(':').slice(0, 2).join(':');
 };
 
 exports.tasksForADay = function (userId, day) {
   return {
-    from: "Task",
+    from: 'Task',
     select: [
-      "Name",
-      "Number",
-      "Status.Name",
-      "ChangeDate",
-      "CreateDate",
-      "DetailEstimate",
+      'Name',
+      'Number',
+      'Status.Name',
+      'ChangeDate',
+      'CreateDate',
+      'DetailEstimate',
       {
-        from: "Owners",
+        from: 'Owners',
         select: [
-          "Name",
-          "Nickname"
+          'Name',
+          'Nickname'
         ]
       }
     ],
     where: {
-      "Owners.ID": userId,
-      "Status.Name": "Completed"
+      'Owners.ID': userId,
+      'Status.Name': 'Completed'
     },
     filter: [
-      "ChangeDate>'" + day + "T00:00:00'"
+      'ChangeDate>\'' + day + 'T00:00:00\''
     ],
     sort: [
-      "-ChangeDate"
+      '-ChangeDate'
     ],
-    asof: day + "T23:59:59"
+    asof: day + 'T23:59:59'
   };
 };
 
 exports.classifyDay = function (dayMoment) {
   var dow = dayMoment.day();
   if (dow === 0 /* Sunday */ || dow === 6 /* Saturday */) {
-    return 'holiday'
+    return 'holiday';
   }
-  return dayMoment.dayOfYear() % 2 === 1 ? 'odd-day' : 'even-day'
-}
+  return dayMoment.dayOfYear() % 2 === 1 ? 'odd-day' : 'even-day';
+};
 
 exports.urlToUser = function (id) {
   return process.env.V1_OAUTH_SERVER_BASE_URI + '/Member.mvc/Summary?oidToken=' + id;

@@ -19,10 +19,10 @@ exports.reportByUserId = function (req, res) {
   var labels = [];
   var queries = [
     {
-      from: "Member",
+      from: 'Member',
       select: [
-        "Name",
-        "Nickname"
+        'Name',
+        'Nickname'
       ],
       where: {
         ID: req.params.userId
@@ -30,7 +30,7 @@ exports.reportByUserId = function (req, res) {
     }
   ];
   while (current.isAfter(earliest)) {
-    queries.push(tasksForADay(req.params.userId, current.format("YYYY-MM-DD")));
+    queries.push(tasksForADay(req.params.userId, current.format('YYYY-MM-DD')));
     labels.push(current.clone());
     current.subtract(1, 'days');
   }
@@ -48,7 +48,7 @@ exports.reportByUserId = function (req, res) {
         completionScore: 0,
         totalDays: 0,
         totalTasks: 0
-      }
+      };
       var data = queryRes.body.map(function (dayData, index) {
         var dayMoment = labels[index];
         var completionScore = 4 - 4 / Math.pow(2, dayData.length);
@@ -76,14 +76,14 @@ exports.reportByUserId = function (req, res) {
                   name: ownerData.Name,
                   url: urlToUser(normalizeOid(ownerData._oid)),
                   id: normalizeOid(ownerData._oid)
-                }
+                };
               }).filter(function (collaborator) {
                 return collaborator.id !== userId;
               }),
               orig: taskData
-            }
+            };
           })
-        }
+        };
       });
 
       summary.averageCompletionScore = summary.completionScore / summary.totalDays;
@@ -97,7 +97,7 @@ exports.reportByUserId = function (req, res) {
           devMode: false,
           dataString: JSON.stringify(data, null, ' ')
         }
-      }
+      };
       ejs.renderFile(templatePath, options, function (err, str) {
         if (err) {
           debug('err rendering', err);
@@ -105,11 +105,10 @@ exports.reportByUserId = function (req, res) {
         } else {
           res.send(str);
         }
-      })
+      });
     } else {
       res.send('failure. :-(' + queryRes.text);
     }
   });
-}
-
+};
 
