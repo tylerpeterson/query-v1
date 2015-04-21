@@ -140,6 +140,7 @@ exports.reportByUserId = function (req, res) {
     scores.meanEstimatedHoursPerDay = numeral(scores.totalEstimatedHours / scores.workDays).format('0.00');
     scores.totalDaysWithTasks = numeral(scores.totalDaysWithTasks).format('0.00');
     scores.totalTasks = numeral(scores.totalTasks).format('0.00');
+    scores.totalEstimatedHours = numeral(scores.totalEstimatedHours).format('0.0');
 
     var locals = {
       user: user,
