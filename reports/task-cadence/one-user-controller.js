@@ -167,12 +167,12 @@ function removeDuplicates(data) {
     return accumulator;
   }, {});
   var i;
-  for (i = data.length - 1; i >= 1; --i) { // Don't do the zeroeth item. That one is different
+  for (i = data.length - 1; i >= 0; --i) {
     data[i] = _.reject(data[i], filterFunction);
   }
   function filterFunction(task) {
     var num = task.Number;
-    var found = oldCompletions[num];
+    var found = oldCompletions[num] || false;
 
     oldCompletions[num] = true;
 
