@@ -80,7 +80,8 @@ exports.reportByUserId = function (req, res) {
         }
         if (day.isSame('2015-02-16', 'day') || // holidays
             day.isSame('2015-01-19', 'day') ||
-            day.isSame('2015-05-25', 'day')) {
+            day.isSame('2015-05-25', 'day') ||
+            day.isSame('2015-07-03', 'day')) {
           return 0;
         }
         return 1;
