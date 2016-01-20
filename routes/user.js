@@ -13,6 +13,7 @@ var util = require('util');
  */
 
 exports.list = function(req, res){
+  debug('routes/user.js:list: START');
   var flaggedOidsP = userService.getFlaggedOids();
   
   v1Query(req, {
@@ -23,10 +24,13 @@ exports.list = function(req, res){
     })
     .end(function (err, queryRes) {
       if (err) {
+        debug('routes/user.js:list:Nicknames error');
         res.send('failure :-(\n' + queryRes.text);
         return;
       }
 
+      debug('routes/user.js:list:Nicknames SUCCESS');
+      require('fs').writeFileSync('probe.DUMP', JSON.stringify(queryRes.body, null, ' '));
       var allUsers = queryRes.body[0];
       var _oidIndex = _.indexBy(allUsers, '_oid');
 

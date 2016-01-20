@@ -2,20 +2,16 @@
 	"folders":
 	[
 		{
-			"follow_symlinks": true,
 			"path": "."
 		},
 		{
-			"follow_symlinks": true,
 			"path": "node_modules/sample-v1-queries"
 		},
 		{
-			"follow_symlinks": true,
-			"path": "node_modules/v1oauth"
+			"path": "/Users/petersontb/sandbox/fs-projects/360s"
 		},
 		{
-			"follow_symlinks": true,
-			"path": "/Users/petersontb/sandbox/fs-projects/360s"
+			"path": "/Users/petersontb/sandbox/my-tools/v1oauth"
 		}
 	]
 }
