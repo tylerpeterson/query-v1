@@ -18,6 +18,11 @@ var tasksForADay = myUtils.tasksForADay;
 var urlToUser = myUtils.urlToUser;
 var normalizeOid = myUtils.normalizeOid;
 
+var HOLIDAYS = [
+  '2016-12-26', '2016-12-23', '2016-11-25', '2016-11-24', '2016-09-05', '2016-07-25', '2016-07-04', '2016-05-30', '2016-02-15', '2016-01-18', '2016-01-01',
+  '2015-12-25', '2015-12-24', '2015-11-27', '2015-11-26', '2015-09-07', '2015-07-24', '2015-07-03', '2015-05-25', '2015-02-16', '2015-01-19', '2015-01-01'
+];
+
 exports.reportByUserId = function (req, res) {
   debug('listDailyCompletions', req.params.userId);
   var earliest = moment().subtract(15, 'days');
@@ -75,16 +80,17 @@ exports.reportByUserId = function (req, res) {
     var data = queryRes.body.map(function (dayData, index) {
       var dayMoment = labels[index];
       scores.workDays += (function (day) {
+        var i;
+        var l;
+
         if (day.isoWeekday() > 5) { // Saturday or Sunday
           return 0;
         }
-        if (day.isSame('2015-02-16', 'day') || // holidays
-            day.isSame('2015-01-19', 'day') ||
-            day.isSame('2015-05-25', 'day') ||
-            day.isSame('2015-07-03', 'day') ||
-            day.isSame('2015-07-24', 'day') ||
-            day.isSame('2015-09-07', 'day')) {
-          return 0;
+        for (i = 0, l = HOLIDAYS.length; i < l; ++i) {
+          if (day.isSame(HOLIDAYS[i], 'day')) {
+            debug('Found a holiday: %s', day);
+            return 0;
+          }
         }
         return 1;
       })(dayMoment);
