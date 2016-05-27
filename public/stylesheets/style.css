@@ -5,6 +5,12 @@ body {
 a {
   color: DarkBlue;
 }
+table .warning {
+  background-color: #fa8072;
+}
+table thead {
+  font-weight: bold;
+}
 table tr {
   background-color: #eee;
 }
