@@ -1,7 +1,23 @@
+<%
+  var targetScores = {
+    daysWithTasksScore: "45%",
+    meanTasksPerDay: 0.85,
+    meanEstimatedHoursPerDay: 3.10
+  }
+
+  var warnings = {};
+
+  for (var key in targetScores) {
+    if (targetScores.hasOwnProperty(key) && parseFloat(targetScores[key], 10) > parseFloat(scores[key], 10)) {
+      warnings[key] = true;
+    }
+  }
+%>
+
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Developer Task Completion Cadence</title>
+    <title>Productivity Cadence for <%= user.name %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
 <body>
@@ -9,23 +25,23 @@
   <h2>Productivity Scores</h2>
   <table>
     <thead>
-      <tr><td>Metric</td><td>Score</td><td>Minimum Standard</td></tr>
+      <tr><td>Metric</td><td>Score</td><td>Minimum<br/>Standard</td></tr>
     </thead>
     <tbody>
       <tr>
-        <td>Days With Tasks</td>
-        <td><%= scores.daysWithTasksScore %></td>
-        <td>45%</td>
+        <td <%= (warnings.daysWithTasksScore)? "class=warning": ""; %>>Days With Tasks</td>
+        <td><%= scores.daysWithTasksScore%></td>
+        <td><%= targetScores.daysWithTasksScore %></td>
       </tr>
       <tr>
-        <td>Tasks per Day</td>
+        <td <%= (warnings.meanTasksPerDay)? "class=warning": ""; %>>Tasks per Day</td>
         <td><%= scores.meanTasksPerDay %></td>
-        <td>0.85</td>
+        <td><%= targetScores.meanTasksPerDay %></td>
       </tr>
       <tr>
-        <td>Estimated Hours per Day</td>
+        <td <%= (warnings.meanEstimatedHoursPerDay)? "class=warning": ""; %>>Estimated Hours per Day</td>
         <td><%= scores.meanEstimatedHoursPerDay %></td>
-        <td>3.10</td>
+        <td><%= targetScores.meanEstimatedHoursPerDay %></td>
       </tr>
     </tbody>
   </table>
