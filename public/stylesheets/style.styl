@@ -82,6 +82,8 @@ table.user-task-cadence
   $color2 = lighten(#8CBA53, 50%)
   $color1a = lighten($color1, 25%)
   $color2a = lighten($color2, 25%)
+  tr td
+    page-break-inside: avoid
   tr.even-day
     background-color $color1
   tr.even-day.even
@@ -96,4 +98,32 @@ table.user-task-cadence
 /*!
  * End styles for the tasks-completed-daily-for-one-user report.
  */
+
+.datepicker
+  font-size: 18px
+  label, [type=submit]
+    height: 18px
+  input
+    font-size: 16px
+  [type=submit]
+    font-size: 16px
+  .reset
+    font-size: 14px
+    margin-left: 10px
+  .reset:before
+    content: "|"
+    display: inline-block
+    margin: 0 5px 0 -10px
+    pointer-events: none
+
+#print-subheading
+  display: none
+
+@media print
+  body
+    padding-top: 0
+  .datepicker
+    display: none
+  #print-subheading
+    display: block
 

@@ -56,6 +56,9 @@ table tr:nth-child(even) {
 /*
  * Styles for the tasks-completed-daily-for-one-user report.
  */
+table.user-task-cadence tr td {
+  page-break-inside: avoid;
+}
 table.user-task-cadence tr.even-day {
   background-color: #d0cdc1;
 }
@@ -73,3 +76,40 @@ table.user-task-cadence tr.odd-day:nth-child(even) {
 /*
  * End styles for the tasks-completed-daily-for-one-user report.
  */
+.datepicker {
+  font-size: 18px;
+}
+.datepicker label,
+.datepicker [type=submit] {
+  height: 18px;
+}
+.datepicker input {
+  font-size: 16px;
+}
+.datepicker [type=submit] {
+  font-size: 16px;
+}
+.datepicker .reset {
+  font-size: 14px;
+  margin-left: 10px;
+}
+.datepicker .reset:before {
+  content: "|";
+  display: inline-block;
+  margin: 0 5px 0 -10px;
+  pointer-events: none;
+}
+#print-subheading {
+  display: none;
+}
+@media print {
+  body {
+    padding-top: 0;
+  }
+  .datepicker {
+    display: none;
+  }
+  #print-subheading {
+    display: block;
+  }
+}

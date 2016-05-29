@@ -17,6 +17,7 @@ var classifyDay = myUtils.classifyDay;
 var tasksForADay = myUtils.tasksForADay;
 var urlToUser = myUtils.urlToUser;
 var normalizeOid = myUtils.normalizeOid;
+var parseUrlParams = myUtils.parseUrlParams;
 
 var HOLIDAYS = [
   '2016-12-26', '2016-12-23', '2016-11-25', '2016-11-24', '2016-09-05', '2016-07-25', '2016-07-04', '2016-05-30', '2016-02-15', '2016-01-18', '2016-01-01',
@@ -25,8 +26,10 @@ var HOLIDAYS = [
 
 exports.reportByUserId = function (req, res) {
   debug('listDailyCompletions', req.params.userId);
-  var earliest = moment().subtract(15, 'days');
-  var current = moment();
+  var urlParams = parseUrlParams(req.url.substr((req.url.indexOf("?") !== -1)? req.url.indexOf("?") + 1: req.url.length));
+
+  var earliest = (urlParams.start)? moment(urlParams.start).subtract("days", 1): moment().subtract("days", 15);
+  var current = (urlParams.end)? moment(urlParams.end): moment();
   var labels = [];
   var queries = [
     {
@@ -40,7 +43,7 @@ exports.reportByUserId = function (req, res) {
       }
     }
   ];
-  while (current.isAfter(earliest)) {
+  while (current.isSameOrAfter(earliest)) {
     queries.push(tasksForADay(req.params.userId, current.format('YYYY-MM-DD')));
     labels.push(current.clone());
     current.subtract(1, 'days');
