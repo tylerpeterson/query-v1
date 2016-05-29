@@ -21,7 +21,15 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
 <body>
+  <a id="back-link">Back to users</a>
   <h1>Productivity Cadence Summary for <a href="<%= user.url %>"><%= user.name %></a></h1>
+  <form class="datepicker" action="?" method="get">
+    <label title="Start date">From: <input type="text" name="start" id="start-date"></input></label>
+    <label title="End date"> to: <input type="text" name="end" id="end-date"></input></label>
+    <input type="submit" title="Update time range" value="Update time range"></input>
+    <a href="?" class="reset" title="Reset date range to default">Reset</a>
+  </form>
+  <h3 id="print-subheading"></h3>
   <h2>Productivity Scores</h2>
   <table>
     <thead>
@@ -116,5 +124,60 @@
   <% if (devMode) { %>
     <pre><%= dataString %></pre>
   <% } %>
+
+<link rel="stylesheet" href="/vendor/pikaday.css">
+<script src="/vendor/moment-2.13.0-min.js"></script>
+<script src="/vendor/pikaday-1.4.0-min+.js"></script>
+<script>
+  var query = window.location.search.substring(1),
+      urlParams,
+      startDate,
+      endDate,
+      startPicker,
+      endPicker;
+  (window.onpopstate = function () {
+    var match,
+      pl = /\+/g,  // Regex for replacing addition symbol with a space
+      search = /([^&=]+)=?([^&]*)/g,
+      decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+    urlParams = {};
+    while (match = search.exec(query)) {
+     urlParams[decode(match[1])] = decode(match[2]);
+    }
+
+    startDate = (urlParams.start)? moment(urlParams.start): moment().subtract("days", 15);
+    endDate = (urlParams.end)? moment(urlParams.end): moment();
+
+    startPicker = new Pikaday({
+      defaultDate: startDate.toDate(),
+      setDefaultDate: true,
+      minDate: moment("1990").toDate("YYYY"),
+      maxDate: moment().toDate(),
+      field: document.getElementById("start-date"),
+      format: "YYYY-MM-DD",
+      onClose: function(evt) {
+        // unfortunately, onClose does not pass on the event, so that we would be able to prevent default, say, on enter, to keep a form from submitting on selection of a date, but everywhere else in the document
+      }
+    });
+
+    endPicker = new Pikaday({
+      defaultDate: endDate.toDate(),
+      setDefaultDate: true,
+      minDate: moment("1990").toDate("YYYY"),
+      maxDate: moment().toDate(),
+      field: document.getElementById("end-date"),
+      format: "YYYY-MM-DD",
+      onClose: function(evt) {
+        // unfortunately, onClose does not pass on the event, so that we would be able to prevent default, say, on enter, to keep a form from submitting on selection of a date, but everywhere else in the document
+      }
+
+    });
+
+    document.getElementById("print-subheading").innerHTML = "From " + startDate.format("MMM Do, YYYY") + " through " + endDate.format("MMM Do, YYYY") + " (" + <%= scores.workDays %> + " days)";
+
+    document.getElementById("back-link").setAttribute("href", "/users?" + query);
+  })();
+</script>
+
 </body>
 </html>

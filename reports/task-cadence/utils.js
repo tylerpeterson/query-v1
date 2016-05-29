@@ -42,6 +42,19 @@ exports.classifyDay = function (dayMoment) {
   return dayMoment.dayOfYear() % 2 === 1 ? 'odd-day' : 'even-day';
 };
 
+exports.parseUrlParams = function (queryString) {
+  var match,
+      pl = /\+/g,  // Regex for replacing addition symbol with a space
+      search = /([^&=]+)=?([^&]*)/g,
+      decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+      urlParams = {};
+  while (match = search.exec(queryString)) {
+   urlParams[decode(match[1])] = decode(match[2]);
+  }
+
+  return urlParams;
+};
+
 exports.urlToUser = function (id) {
   return process.env.V1_OAUTH_SERVER_BASE_URI + '/Member.mvc/Summary?oidToken=' + id;
 };

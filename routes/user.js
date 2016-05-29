@@ -16,6 +16,7 @@ exports.list = function(req, res){
   debug('routes/user.js:list: START');
   var flaggedOidsP = userService.getFlaggedOids();
   
+  res.locals.query = req.url.substr((req.url.indexOf("?") !== -1)? req.url.indexOf("?"): req.url.length);
   v1Query(req, {
       from: 'Member',
       select: [
@@ -44,9 +45,9 @@ exports.list = function(req, res){
         });
         return Q.allSettled(updatePromises).then(function (states) {
           debug('Update promises settled: %s', JSON.stringify(states, null, ' '));
-          res.render('users', { 
-            title: 'All Users', 
-            users: allUsers, 
+          res.render('users', {
+            title: 'All Users',
+            users: allUsers,
             isChecked: function(oid) {
               if (_.contains(flaggedOids, oid)) return 'checked';
               return '';
@@ -78,9 +79,9 @@ exports.listFlagged = function (req, res) {
 
       if (!err) {
         userData = _.flatten(queryRes.body)
-        res.render('users', { 
-          title: 'Flagged Users', 
-          users: userData, 
+        res.render('users', {
+          title: 'Flagged Users',
+          users: userData,
           isChecked: function(oid) { // TODO sort out whether to show check boxes on both pages
             if (_.contains(flaggedOids, oid)) return 'checked';
             return '';
@@ -119,7 +120,7 @@ exports.listAllTasks = function (req, res) {
       },
       "sort": [
         "-ChangeDate"
-      ]    
+      ]
     }];
 
   debug('listAllTasks');
@@ -213,7 +214,7 @@ exports.listFlaggedTasks = function (req, res) {
           })
         }
         debug('flagged user tasks', JSON.stringify(taskData, null, '  '));
-        res.render('tasks', { 
+        res.render('tasks', {
           title: 'Flagged Users\' Tasks' ,
           data: taskData
         });
@@ -227,6 +228,7 @@ exports.listFlaggedTasks = function (req, res) {
 }
 
 exports.linksForUser = function (req, res) {
+  res.locals.query = req.url.substr((req.url.indexOf("?") !== -1)? req.url.indexOf("?"): req.url.length);
   v1Query(req, {
     "from": "Member",
     "select": [
@@ -242,7 +244,7 @@ exports.linksForUser = function (req, res) {
       res.render('linksForUser', {
         userId: req.params.userId,
         title: 'Links for ' + queryRes.body[0][0].Name
-      });      
+      });
     } else {
       res.send('failure :-(');
     }
@@ -394,7 +396,7 @@ function processMemberResultIntoViewData(memberJson) {
   var viewData = {
     data: data,
     histogram: createHistogram(data),
-    user: processMemberResult(memberJson) 
+    user: processMemberResult(memberJson)
   };
   return viewData;
 }
@@ -465,7 +467,7 @@ function createHistogramBoxes() {
       boxName: thisMoment.format('[a year starting ] ll'),
       count: 0
     });
-  } 
-  return histogram; 
+  }
+  return histogram;
 }
 

@@ -20,19 +20,19 @@
         </thead>
         <tbody>
           <% users.forEach(function (user) { %>
-              <tr>
-                <td><%= user._oid %></td>
-                <td><a href="/users/<%= user._oid %>"><%= user.Name %></a></td>
-                <td><%= user.Nickname %></td>
-                <td>
-                  <input
-                      type="checkbox"
-                      name="selectedUsers"
-                      value="<%= user._oid %>"
-                      <%= isChecked(user._oid) %>>
-                </td>
-              </tr>
-            <% }) %>
+            <tr>
+              <td><%= user._oid %></td>
+              <td><a href="/users/<%= user._oid %><%= query %>"><%= user.Name %></a></td>
+              <td><%= user.Nickname %></td>
+              <td>
+                <input
+                  type="checkbox"
+                  name="selectedUsers"
+                  value="<%= user._oid %>"
+                  <%= isChecked(user._oid) %>>
+              </td>
+            </tr>
+          <% }) %>
         </tbody>
       </table>
       <input type="submit" value="Submit">
