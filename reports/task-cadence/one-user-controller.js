@@ -28,7 +28,7 @@ exports.reportByUserId = function (req, res) {
   debug('listDailyCompletions', req.params.userId);
   var urlParams = parseUrlParams(req.url.substr((req.url.indexOf("?") !== -1)? req.url.indexOf("?") + 1: req.url.length));
 
-  var earliest = (urlParams.start)? moment(urlParams.start): moment().subtract("days", 15);
+  var earliest = (urlParams.start)? moment(urlParams.start).subtract("days", 1): moment().subtract("days", 15);
   var current = (urlParams.end)? moment(urlParams.end): moment();
   var labels = [];
   var queries = [
@@ -43,7 +43,7 @@ exports.reportByUserId = function (req, res) {
       }
     }
   ];
-  while (current.isAfter(earliest)) {
+  while (current.isSameOrAfter(earliest)) {
     queries.push(tasksForADay(req.params.userId, current.format('YYYY-MM-DD')));
     labels.push(current.clone());
     current.subtract(1, 'days');

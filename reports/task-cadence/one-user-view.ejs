@@ -145,7 +145,7 @@
      urlParams[decode(match[1])] = decode(match[2]);
     }
 
-    startDate = (urlParams.start)? moment(urlParams.start): moment().subtract("days", 15);
+    startDate = (urlParams.start)? moment(urlParams.start): moment().subtract("days", 14);
     endDate = (urlParams.end)? moment(urlParams.end): moment();
 
     startPicker = new Pikaday({
