@@ -152,23 +152,25 @@
       defaultDate: startDate.toDate(),
       setDefaultDate: true,
       minDate: moment("1990").toDate("YYYY"),
-      maxDate: moment().toDate(),
+      maxDate: endDate.toDate(),
       field: document.getElementById("start-date"),
       format: "YYYY-MM-DD",
       onClose: function(evt) {
-        // unfortunately, onClose does not pass on the event, so that we would be able to prevent default, say, on enter, to keep a form from submitting on selection of a date, but everywhere else in the document
+        // Set min end date selectable to the selected start date
+        endPicker.setMinDate(startPicker.getDate());
       }
     });
 
     endPicker = new Pikaday({
       defaultDate: endDate.toDate(),
       setDefaultDate: true,
-      minDate: moment("1990").toDate("YYYY"),
+      minDate: startDate.toDate(),
       maxDate: moment().toDate(),
       field: document.getElementById("end-date"),
       format: "YYYY-MM-DD",
       onClose: function(evt) {
-        // unfortunately, onClose does not pass on the event, so that we would be able to prevent default, say, on enter, to keep a form from submitting on selection of a date, but everywhere else in the document
+        // Set max start date selectable to the selected end date
+        startPicker.setMaxDate(endPicker.getDate());
       }
 
     });
