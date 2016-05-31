@@ -19,11 +19,6 @@ var urlToUser = myUtils.urlToUser;
 var normalizeOid = myUtils.normalizeOid;
 var parseUrlParams = myUtils.parseUrlParams;
 
-var HOLIDAYS = [
-  '2016-12-26', '2016-12-23', '2016-11-25', '2016-11-24', '2016-09-05', '2016-07-25', '2016-07-04', '2016-05-30', '2016-02-15', '2016-01-18', '2016-01-01',
-  '2015-12-25', '2015-12-24', '2015-11-27', '2015-11-26', '2015-09-07', '2015-07-24', '2015-07-03', '2015-05-25', '2015-02-16', '2015-01-19', '2015-01-01'
-];
-
 exports.reportByUserId = function (req, res) {
   debug('listDailyCompletions', req.params.userId);
   var urlParams = parseUrlParams(req.url.substr((req.url.indexOf("?") !== -1)? req.url.indexOf("?") + 1: req.url.length));
@@ -80,22 +75,31 @@ exports.reportByUserId = function (req, res) {
 
     removeDuplicates(queryRes.body);
 
+    var dontCountNextDay = false;
+
     var data = queryRes.body.map(function (dayData, index) {
       var dayMoment = labels[index];
       scores.workDays += (function (day) {
-        var i;
-        var l;
-
-        if (day.isoWeekday() > 5) { // Saturday or Sunday
-          return 0;
-        }
-        for (i = 0, l = HOLIDAYS.length; i < l; ++i) {
-          if (day.isSame(HOLIDAYS[i], 'day')) {
-            debug('Found a holiday: %s', day);
-            return 0;
+        var isHoliday = check_holiday(day.format("YYYY-MM-DD"));
+        if (day.isoWeekday() < 6) { // Weekday
+          if (!isHoliday) {
+            if (!dontCountNextDay) { return 1; }
+            else { dontCountNextDay = false; return 0; }
+          } else {
+            if (!dontCountNextDay) { return 0; }
+            else { dontCountNextDay = false; return 0; }
+          }
+        } else { // Saturday or Sunday
+          if (!isHoliday) { return 0; }
+          else {
+            if (day.isoWeekday() === 6) { // Saturday holidays are taken on the preceding Friday
+              return (scores.workDays > 0)? -1: 0;
+            } else if (day.isoWeekday() === 7) { // Sunday holidays are taken on the following Monday
+              dontCountNextDay = true;
+              return 0;
+            }
           }
         }
-        return 1;
       })(dayMoment);
       scores.totalDaysWithTasks += dayData.reduce(function (prev, cur) {
         return Math.min(1, prev + 1 / cur.Owners.length);
@@ -172,6 +176,71 @@ exports.reportByUserId = function (req, res) {
     });
   });
 };
+
+/**
+ * @function check_holiday - Takes a JavaScript Date object or string, and checks to see if it is one of the 11 standard holidays.
+ * @param {Date|string} dt_date - The date to check. Either a JavaScript Date object, or a string in the format YYYY-MM-DD.
+ * @returns {boolean} - true if passed-in date is a holiday, false if not.
+ * @reference - https://www.softcomplex.com/forum/viewthread_2814/
+*/
+function check_holiday (dt_date) {
+  // Accept either JavaScript Date, or Date-acceptable string
+  if (typeof dt_date === 'string' || dt_date instanceof String) {
+    var date_fields = dt_date.split(/[-]+/);
+    var dt_date = new Date(parseInt(date_fields[0], 10), parseInt(date_fields[1], 10) - 1, parseInt(date_fields[2], 10));
+  } else if (Object.prototype.toString.call(dt_date) !== '[object Date]') {
+    return false;
+  }
+
+  // Holidays: Simple (month/date - no leading zeroes)
+
+  var n_date = dt_date.getDate(),
+      n_month = dt_date.getMonth() + 1;
+  var s_date1 = n_month + '/' + n_date;
+
+  if (s_date1 == '1/1'    // New Year's Day
+    || s_date1 == '7/4'   // Independence Day
+    || s_date1 == '7/24'  // Pioneer Day
+    || s_date1 == '12/24' // Christmas Eve
+    || s_date1 == '12/25' // Christmas Day
+
+  ) {
+    return true;
+  }
+
+  // Holdays: Weekday from beginning of the month (month/num/day)
+
+  var n_wday = dt_date.getDay(),
+      n_wnum = Math.floor((n_date - 1) / 7) + 1;
+  var s_date2 = n_month + '/' + n_wnum + '/' + n_wday;
+
+  if (s_date2 == '1/3/1'  // Birthday of Martin Luther King, third Monday in January
+    || s_date2 == '2/3/1'  // President's Day, third Monday in February
+    || s_date2 == '9/1/1'  // Labor Day, first Monday in September
+    || s_date2 == '11/4/4' // Thanksgiving Day, fourth Thursday in November
+    || s_date2 == '11/4/5' // Black Friday, fourth Friday in November
+  ) {
+    return true;
+  }
+
+  // Holidays: Weekday number from end of the month (month/num/day)
+
+  var dt_temp = new Date (dt_date);
+  dt_temp.setDate(1);
+  dt_temp.setMonth(dt_temp.getMonth() + 1);
+  dt_temp.setDate(dt_temp.getDate() - 1);
+  n_wnum = Math.floor((dt_temp.getDate() - n_date - 1) / 7) + 1;
+
+  var s_date3 = n_month + '/' + n_wnum + '/' + n_wday;
+
+  if (s_date3 == '5/1/1'  // Memorial Day, last Monday in May
+  ) {
+    return true;
+  }
+
+  // Date does match checked holidays
+  return false;
+}
 
 function removeDuplicates(data) {
   var oldCompletions = _.pluck(data.pop().tasks, 'Number').reduce(function (accumulator, current) {
