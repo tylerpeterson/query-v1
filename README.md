@@ -5,7 +5,7 @@ Playing around with querying VersionOne programmatically.
 
 ## Running it Locally
 
-You have to have node and npm installed. 
+You have to have node and npm installed, and npm install supervisor, locally. 
 
 ### Get A V1 client_secrets.json File
 
