@@ -40,3 +40,4 @@ node_modules-hidden
 
 *.sublime-workspace
 client_secrets*.json
+*.DUMP

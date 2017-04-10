@@ -84,7 +84,7 @@ Q.all([accessTokenPromise, refreshTokenPromise]).spread(function (accessToken, r
   debug('query', query);
   request
       .get(serverBaseUri + '/query.v1')
-      .set('Authorization', 'Bearer ' + accessToken)
+      .set('Authorization', 'Bearer ' + secrets.access_token)
       .send(query)
       .end(function (res) {
           if (res.ok) {

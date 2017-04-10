@@ -42,8 +42,8 @@ exports.listStoriesForTimebox = function(req, res, next){
     });
 };
 
-exports.getRouter = function (v1Auth) {
+exports.getRouter = function () {
   var app = express.Router();
-  app.get('/timebox/:timebox', v1Auth, exports.listStoriesForTimebox);
+  app.get('/timebox/:timebox', exports.listStoriesForTimebox);
   return app;
 }

@@ -7,7 +7,7 @@
    uses help a bit.
  */
 
-var authService = require('v1oauth').authService(require('../client_secrets'));
+var secrets = require('../client_secrets');
 var debug = require('debug')('query-v1');
 var request = require('superagent');
 var path = require('path');
@@ -16,24 +16,21 @@ var Analyzer = require('./CountUniqueValues');
 
 queryObject.page.size = 1000;
 
-authService().then(function (tokens) {
-  var token = tokens.access_token;
-  // TODO get multiple smaller pages of results instead of one big request
-  // TODO be kind and throttle requesting.
-  request
-    .get(authService.serverBaseUri + '/query.v1')
-    .set('Authorization', 'Bearer ' + token)
-    .send(queryObject)
-    .end(function (res) {
-      if (res.ok) {
-        var analyzer = new Analyzer(queryObject.select.slice());
-        res.body[0].forEach(function (scope) {
-          analyzer.addRecord(scope);
-        });
-        debug(analyzer.summary());
-      } else {
-        debug("failed to get data", res.text);
-      }
-    });
-});
+// TODO get multiple smaller pages of results instead of one big request
+// TODO be kind and throttle requesting.
+request
+  .get(secrets.web.server_base_uri + '/query.v1')
+  .set('Authorization', 'Bearer ' + secrets.access_token)
+  .send(queryObject)
+  .end(function (err, res) {
+    if (!err) {
+      var analyzer = new Analyzer(queryObject.select.slice());
+      res.body[0].forEach(function (scope) {
+        analyzer.addRecord(scope);
+      });
+      debug(analyzer.summary());
+    } else {
+      debug("failed to get data", err.text);
+    }
+  });
 

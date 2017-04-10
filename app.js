@@ -12,7 +12,6 @@ var http = require('http');
 var path = require('path');
 var url = require('url');
 var secrets = require('./lib/load-secrets')('../client_secrets');
-var AuthApp = require('v1oauth').app;
 var bodyParser = require('body-parser');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -36,7 +35,6 @@ if (process.env.V1_OAUTH_SECRETS_FROM_FILE) {
 
 var app = express();
 var port = process.env.V1_OAUTH_SECRETS_FROM_FILE && url.parse(redirectUri).port || process.env.PORT;
-var auth = new AuthApp(secrets, {appBaseUrl: appBaseFromSecrets(secrets), secureCookies: false});
 
 debug('binding to port', port);
 
@@ -63,26 +61,25 @@ app.use(cookieParser('your secret here'));
 app.use(session());
 
 app.get('/', routes.index);
-app.get('/users', auth.restrict, user.list);
-app.post('/users', auth.restrict, user.postList);
-app.get('/users/flagged', auth.restrict, user.listFlagged);
-app.get('/users/flagged/tasks', auth.restrict, user.listFlaggedTasks);
-app.get('/users/:userId', auth.restrict, user.linksForUser);
-app.get('/user/:id/accesses', auth.restrict, user.listUserAccessHistory);
-app.get('/users/flagged/accesses', auth.restrict, user.listFlaggedAccessHistories);
-app.use(timebox.getRouter(auth.restrict));
-app.use(scope.getRouter(auth.restrict));
-app.get('/user/:id/all-tasks', auth.restrict, user.listAllTasks);
-app.get('/user/:userId/done-tasks', auth.restrict,
+app.get('/users', user.list);
+app.post('/users', user.postList);
+app.get('/users/flagged', user.listFlagged);
+app.get('/users/flagged/tasks', user.listFlaggedTasks);
+app.get('/users/:userId', user.linksForUser);
+app.get('/user/:id/accesses', user.listUserAccessHistory);
+app.get('/users/flagged/accesses', user.listFlaggedAccessHistories);
+app.use(timebox.getRouter());
+app.use(scope.getRouter());
+app.get('/user/:id/all-tasks', user.listAllTasks);
+app.get('/user/:userId/done-tasks',
     require('./reports/task-cadence/one-user-controller').reportByUserId);
-app.get('/users/flagged/task-cadence', auth.restrict,
+app.get('/users/flagged/task-cadence',
     require('./reports/task-cadence/flagged-users-controller').report);
-app.get('/user/:userId/cadence/year', auth.restrict,
+app.get('/user/:userId/cadence/year',
     require('./reports/task-cadence/user-year-controller').reportByUserId);
 
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(auth.router);
 
 // development only
 if ('development' == app.get('env')) {

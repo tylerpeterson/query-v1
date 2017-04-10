@@ -22,3 +22,51 @@ To make OAuth work you need to create your own client_secrets.json file.
 Once you have node, the code, and the OAuth setup then just run it from the terminal by going to the root of the project. Run the run_dev.sh script to launch the site locally.
 
 Navigate to http://localhost:8088/
+
+### UPDATE [April 10, 2017]: Add your Access Token
+
+VersionOne has changed the way it does authentication. Now you go to your login and generate an access token for your own app. 
+
+    ╭──────────────────────────────────────────────╮
+    │ ◎ ○ ○ ░░░░░░░░░░░ VERSIONONE ░░░░░░░░░░░░░░░░│
+    ├──────────────────────────────────────────────┤
+    │            (Hover) ────────────▶ UserName    │
+    │                           ┌─────────────────┐│
+    │                           │Member Details   ││
+    │                           │Preferences      ││
+    │                           │Password         ││
+    │                           │Push Notificat...││
+    │    (Select) ──────────────▶Applications     ││
+    │                           │Timesheet        ││
+    │                           │Logout           ││
+    │                           └─────────────────┘│
+    └──────────────────────────────────────────────┘
+
+Click "Applications" on the menu that appears when you hover over your username.
+
+    ╭──────────────────────────────────────────────╮
+    │ ◎ ○ ○ ░░░░ V1 Member / Applications  ░░░░░░░░│
+    ├──────────────────────────────────────────────┤
+    │Applications to Add:                          │
+    │ ◎ Public                                     │
+    │ ◉ Personal                                   │
+    │                                              │
+    │Enter an application name:                    │
+    │  ┌────────────────────────────────────────┐  │
+    │  │          Make up a name here.          │  │
+    │  └────────────────────────────────────────┘  │
+    │  ┌───┐                                       │
+    │  │Add│                                       │
+    │  └───┘                                       │
+    └──────────────────────────────────────────────┘
+
+Select "Personal" application, make up a name for it, and click "Add." The site will generate an encoded token that you MUST keep track of from here on out.
+
+To run the app locally you have to put that access token into your client_secrets.json file.
+
+    {
+      "web": {
+        "server_base_uri": "https://www5.v1host.com/FH-V1",
+      },
+      "access_token": ">>>>YOUR ACCESS TOKEN HERE<<<<"
+    }

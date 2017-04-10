@@ -61,8 +61,8 @@ exports.listStoriesForScope = function (req, res, next) {
     });
 }
 
-exports.getRouter = function (v1Auth) {
+exports.getRouter = function () {
   var app = express.Router();
-  app.get('/scope/:scope', v1Auth, exports.listStoriesForScope);
+  app.get('/scope/:scope', exports.listStoriesForScope);
   return app;
 }
