@@ -1,6 +1,6 @@
 {
   "name": "query-v1",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Automated reporting against version one. Stuff I find useful. Nothing more.",
   "author": "Tyler Peterson <petersontb@familysearch.org>",
   "repository": {
@@ -47,8 +47,7 @@
     "temp": "~0.8.3"
   },
   "engines": {
-    "node": "~4.0.0",
-    "npm": "2.7.x"
+    "node": "6.10.2"
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha",
