@@ -7,7 +7,7 @@
    uses help a bit.
  */
 
-var secrets = require('../client_secrets');
+var secrets = require('../lib/load-secrets')('../client_secrets');
 var debug = require('debug')('query-v1');
 var request = require('superagent');
 var path = require('path');
@@ -19,8 +19,8 @@ queryObject.page.size = 1000;
 // TODO get multiple smaller pages of results instead of one big request
 // TODO be kind and throttle requesting.
 request
-  .get(secrets.web.server_base_uri + '/query.v1')
-  .set('Authorization', 'Bearer ' + secrets.access_token)
+  .get(secrets.v1ServerBaseUri + '/query.v1')
+  .set('Authorization', 'Bearer ' + secrets.v1AccessToken)
   .send(queryObject)
   .end(function (err, res) {
     if (!err) {
@@ -30,7 +30,7 @@ request
       });
       debug(analyzer.summary());
     } else {
-      debug("failed to get data", err.text);
+      debug("failed to get data", err);
     }
   });
 

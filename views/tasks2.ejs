@@ -12,7 +12,7 @@
         console.log('userTasksPair', userTasksPair);
        var user = userTasksPair.user;
        var tasks = userTasksPair.tasks; %>
-      <h2><a href="<%= process.env.V1_OAUTH_SERVER_BASE_URI + '/Member.mvc/Summary?oidToken=' + user._oid %>"><%= user.Name %></a></h2>
+      <h2><a href="<%= process.env.V1_SERVER_BASE_URI + '/Member.mvc/Summary?oidToken=' + user._oid %>"><%= user.Name %></a></h2>
       <p><%= user.Nickname %>, <%= user._oid %></p>
       <table class="tasks-for-users">
         <thead>
@@ -30,11 +30,11 @@
           <% tasks.forEach(function (task) { %>
               <tr>
                 <td><%= task._oid %></td>
-                <td><a href="<%= process.env.V1_OAUTH_SERVER_BASE_URI + '/task.mvc/Summary?oidToken=' + task._oid %>"><%= task.Number %> <%= task.Name %></a></td>
+                <td><a href="<%= process.env.V1_SERVER_BASE_URI + '/task.mvc/Summary?oidToken=' + task._oid %>"><%= task.Number %> <%= task.Name %></a></td>
                 <td><%= task.ToDo %></td>
                 <td><%= task.StatusString %></td>
                 <td><%= task.ChangeTimeAgo %></td>
-                <td><a href="<%= process.env.V1_OAUTH_SERVER_BASE_URI + '/story.mvc/Summary?oidToken=' + task["Parent.ID"]._oid%>"><%= task["Parent.Number"] %> <%= task["Parent.Name"] %></a></td>
+                <td><a href="<%= process.env.V1_SERVER_BASE_URI + '/story.mvc/Summary?oidToken=' + task["Parent.ID"]._oid%>"><%= task["Parent.Number"] %> <%= task["Parent.Name"] %></a></td>
                 <td><%= task.OwnersString %></td>
               </tr>
             <% }); %>

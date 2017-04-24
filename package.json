@@ -33,18 +33,19 @@
     "ua-parser-js": "0.7.10"
   },
   "devDependencies": {
-    "grunt": "0.4.5",
-    "grunt-simple-mocha": "0.4.1",
-    "grunt-contrib-watch": "0.6.1",
     "chai": "~3.4.1",
+    "dotenv": "^4.0.0",
+    "grunt": "0.4.5",
+    "grunt-contrib-watch": "0.6.1",
+    "grunt-simple-mocha": "0.4.1",
     "mocha": "~2.3.4",
-    "supertest": "1.1.0",
-    "zombie": "~4.2.1",
+    "nock": "~5.2.1",
     "rewire": "~2.5.1",
     "sinon": "~1.17.2",
-    "nock": "~5.2.1",
+    "supertest": "1.1.0",
+    "temp": "~0.8.3",
     "wire": "~0.10.11",
-    "temp": "~0.8.3"
+    "zombie": "~4.2.1"
   },
   "engines": {
     "node": "6.10.2"

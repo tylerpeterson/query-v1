@@ -50,7 +50,7 @@ exports.reportByUserId = function (req, res) {
 
   // debug(JSON.stringify(queries, null, ' '));
   debug('queries: ', queries.length);
-  v1Query(req, queries).end(function (err, queryRes) {
+  v1Query(queries).end(function (err, queryRes) {
     if (err) {
       res.send('failure. :-(' + queryRes.text);
       return;
@@ -133,7 +133,7 @@ exports.reportByUserId = function (req, res) {
           return {
             name: taskData.Name,
             number: taskData.Number,
-            url: process.env.V1_OAUTH_SERVER_BASE_URI + '/task.mvc/Summary?oidToken=' + id,
+            url: process.env.V1_SERVER_BASE_URI + '/task.mvc/Summary?oidToken=' + id,
             age: creation.from(change, /*show "ago" = */ true),
             ageDetail: creation.twix(change).format(),
             taskEstimate: taskData.DetailEstimate || 'None',

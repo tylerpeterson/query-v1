@@ -17,7 +17,7 @@ exports.list = function(req, res){
   var flaggedOidsP = userService.getFlaggedOids();
   
   res.locals.query = req.url.substr((req.url.indexOf("?") !== -1)? req.url.indexOf("?"): req.url.length);
-  v1Query(req, {
+  v1Query({
       from: 'Member',
       select: [
         'Name', 'Nickname'
@@ -74,7 +74,7 @@ exports.listFlagged = function (req, res) {
       };
     });
 
-    v1Query(req, query).end(function (err, queryRes) {
+    v1Query(query).end(function (err, queryRes) {
       var userData;
 
       if (!err) {
@@ -124,7 +124,7 @@ exports.listAllTasks = function (req, res) {
     }];
 
   debug('listAllTasks');
-  v1Query(req, query).end(function (err, queryRes) {
+  v1Query(query).end(function (err, queryRes) {
     var viewData = {
       title: "All Tasks for User"
     };
@@ -189,7 +189,7 @@ exports.listFlaggedTasks = function (req, res) {
       });
     });
 
-    v1Query(req, query).end(function (err, queryRes) {
+    v1Query(query).end(function (err, queryRes) {
       var taskData = [];
 
       if (!err) {
@@ -229,7 +229,7 @@ exports.listFlaggedTasks = function (req, res) {
 
 exports.linksForUser = function (req, res) {
   res.locals.query = req.url.substr((req.url.indexOf("?") !== -1)? req.url.indexOf("?"): req.url.length);
-  v1Query(req, {
+  v1Query({
     "from": "Member",
     "select": [
       "Name",
@@ -291,7 +291,7 @@ exports.listFlaggedAccessHistories = function (req, res) {
     var query = flaggedOids.map(historyQuery);
 
     debug('getFlaggedOids.then>2');
-    v1Query(req, query).end(function (err, queryRes) {
+    v1Query(query).end(function (err, queryRes) {
       debug('v1Query.end>');
       if (!err) {
         var viewData = {
@@ -406,7 +406,7 @@ exports.listUserAccessHistory = function (req, res) {
 
   var query = [ historyQuery(req.params.id) ];
 
-  v1Query(req, query).end(function (err, queryRes) {
+  v1Query(query).end(function (err, queryRes) {
     if (!err) {
       var viewData = processMemberResultIntoViewData(queryRes.body[0]);
 

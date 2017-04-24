@@ -56,6 +56,6 @@ exports.parseUrlParams = function (queryString) {
 };
 
 exports.urlToUser = function (id) {
-  return process.env.V1_OAUTH_SERVER_BASE_URI + '/Member.mvc/Summary?oidToken=' + id;
+  return process.env.V1_SERVER_BASE_URI + '/Member.mvc/Summary?oidToken=' + id;
 };
 

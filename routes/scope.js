@@ -17,7 +17,7 @@ exports.listStoriesForScope = function (req, res, next) {
   }];
   debug('scopeId', scopeId);
   debug('query', query);
-  v1Query(req, query)
+  v1Query(query)
     .end(function (err, queryRes) {
       if (!err) {
         debug(JSON.stringify(queryRes.body, null, ' '));
@@ -42,7 +42,7 @@ exports.listStoriesForScope = function (req, res, next) {
           };
         });
         debug('second query', query);
-        v1Query(req, query).end(function (err, queryRes) {
+        v1Query(query).end(function (err, queryRes) {
           if (!err) {
             var stories = _.flatten(queryRes.body, true);
             var backlogs = _.groupBy(stories, function (story) {

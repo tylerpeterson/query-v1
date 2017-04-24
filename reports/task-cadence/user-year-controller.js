@@ -35,7 +35,7 @@ exports.reportByUserId = function (req, res) {
     current.subtract(1, 'days');
   }
   // debug(JSON.stringify(queries, null, ' '));
-  v1Query(req, queries).end(function (err, queryRes) {
+  v1Query(queries).end(function (err, queryRes) {
     if (!err) {
       var rawUser = queryRes.body.shift()[0];
       var userId = normalizeOid(rawUser._oid);
@@ -68,7 +68,7 @@ exports.reportByUserId = function (req, res) {
             return {
               name: taskData.Name,
               number: taskData.Number,
-              url: process.env.V1_OAUTH_SERVER_BASE_URI + '/task.mvc/Summary?oidToken=' + id,
+              url: process.env.V1_SERVER_BASE_URI + '/task.mvc/Summary?oidToken=' + id,
               age: creation.from(change, /*show 'ago' = */ true),
               ageDetail: creation.twix(change).format(),
               collaborators: taskData.Owners.map(function (ownerData) {

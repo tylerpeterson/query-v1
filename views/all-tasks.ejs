@@ -8,7 +8,7 @@
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
     <% console.log(user); %>
-    <h2><a href="<%= process.env.V1_OAUTH_SERVER_BASE_URI + '/Member.mvc/Summary?oidToken=' + user._oid %>"><%= user.Name %></a></h2>
+    <h2><a href="<%= process.env.V1_SERVER_BASE_URI + '/Member.mvc/Summary?oidToken=' + user._oid %>"><%= user.Name %></a></h2>
     <p><%= user.Nickname %>, <%= user._oid %></p>
     <table class="tasks-for-user">
       <thead>
@@ -29,7 +29,7 @@
         %>
         <tr>
           <td><%= task._oid %></td>
-          <td><a href="<%= process.env.V1_OAUTH_SERVER_BASE_URI + '/task.mvc/Summary?oidToken=' + task._oid %>"><%= task.Number %> <%= task.Name %></a></td>
+          <td><a href="<%= process.env.V1_SERVER_BASE_URI + '/task.mvc/Summary?oidToken=' + task._oid %>"><%= task.Number %> <%= task.Name %></a></td>
           <td><%= task['Status.Name'] %></td>
           <td><%= task.ChangeDate %></td>
         </tr>

@@ -8,7 +8,7 @@
   <body class="accesses-page">
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
-    <h2><a href="<%= process.env.V1_OAUTH_SERVER_BASE_URI + '/Member.mvc/Summary?oidToken=' + user._oid %>"><%= user.Name %></a></h2>
+    <h2><a href="<%= process.env.V1_SERVER_BASE_URI + '/Member.mvc/Summary?oidToken=' + user._oid %>"><%= user.Name %></a></h2>
     <h2>Accesses Summary</h2>
     <table class="accesses-for-users">
       <thead>

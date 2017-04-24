@@ -26,7 +26,7 @@ exports.listStoriesForTimebox = function(req, res, next){
     }];
   debug('timeboxId', timeboxId);
   debug('query', JSON.stringify(query, null, ' '));
-  v1Query(req, query)
+  v1Query(query)
     .end(function (err, queryRes) {
       var timebox;
 
