@@ -7,12 +7,12 @@ var express = require('express');
 exports.listStoriesForScope = function (req, res, next) {
   var scopeId = parseInt(req.params.scope);
   var query = [{
-    from: "Scope",
+    from: 'Scope',
     select: [
-      "Name"
+      'Name'
     ],
     where: {
-      "ParentMeAndUp.ID": "Scope:" + scopeId
+      'ParentMeAndUp.ID': 'Scope:' + scopeId
     }
   }];
   debug('scopeId', scopeId);
@@ -24,20 +24,20 @@ exports.listStoriesForScope = function (req, res, next) {
         var scopes = queryRes.body[0];
         var query = scopes.map(function (scope) {
           return {
-            from: "Story",
+            from: 'Story',
             select: [
-              "Name",
-              "Estimate",
-              "Order",
-              "Team.Name",
-              "Team",
-              "Status.Name",
-              "Timebox.Name",
-              "Timebox.EndDate",
-              "Timebox"
+              'Name',
+              'Estimate',
+              'Order',
+              'Team.Name',
+              'Team',
+              'Status.Name',
+              'Timebox.Name',
+              'Timebox.EndDate',
+              'Timebox'
             ],
             where: {
-              "Scope.ID": scope._oid
+              'Scope.ID': scope._oid
             }
           };
         });

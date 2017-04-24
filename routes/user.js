@@ -12,11 +12,11 @@ var util = require('util');
  * GET users listing.
  */
 
-exports.list = function(req, res){
+exports.list = function (req, res) {
   debug('routes/user.js:list: START');
   var flaggedOidsP = userService.getFlaggedOids();
-  
-  res.locals.query = req.url.substr((req.url.indexOf("?") !== -1)? req.url.indexOf("?"): req.url.length);
+
+  res.locals.query = req.url.substr((req.url.indexOf('?') !== -1) ? req.url.indexOf('?') : req.url.length);
   v1Query({
       from: 'Member',
       select: [
@@ -48,8 +48,10 @@ exports.list = function(req, res){
           res.render('users', {
             title: 'All Users',
             users: allUsers,
-            isChecked: function(oid) {
-              if (_.contains(flaggedOids, oid)) return 'checked';
+            isChecked: function (oid) {
+              if (_.contains(flaggedOids, oid)) {
+                return 'checked';
+              }
               return '';
             }
           });
@@ -83,7 +85,9 @@ exports.listFlagged = function (req, res) {
           title: 'Flagged Users',
           users: userData,
           isChecked: function(oid) { // TODO sort out whether to show check boxes on both pages
-            if (_.contains(flaggedOids, oid)) return 'checked';
+            if (_.contains(flaggedOids, oid)) {
+              return 'checked';
+            }
             return '';
           }
         });
@@ -99,34 +103,34 @@ exports.listFlagged = function (req, res) {
 exports.listAllTasks = function (req, res) {
   var query = [
     {
-      "from": "Member",
-      "select": [
-        "Name",
-        "Nickname"
+      'from': 'Member',
+      'select': [
+        'Name',
+        'Nickname'
       ],
-      "where": {
-        "ID": req.params.id
+      'where': {
+        'ID': req.params.id
       }
-    },{
-      "from": "Task",
-      "select": [
-        "Name",
-        "Number",
-        "Status.Name",
-        "ChangeDate"
+    }, {
+      'from': 'Task',
+      'select': [
+        'Name',
+        'Number',
+        'Status.Name',
+        'ChangeDate'
       ],
-      "where": {
-        "Owners.ID": req.params.id
+      'where': {
+        'Owners.ID': req.params.id
       },
-      "sort": [
-        "-ChangeDate"
+      'sort': [
+        '-ChangeDate'
       ]
     }];
 
   debug('listAllTasks');
   v1Query(query).end(function (err, queryRes) {
     var viewData = {
-      title: "All Tasks for User"
+      title: 'All Tasks for User'
     };
     if (!err) {
       viewData.user = queryRes.body[0][0];
@@ -145,46 +149,46 @@ exports.listFlaggedTasks = function (req, res) {
     var query = [];
     flaggedOids.forEach(function (oid) {
       query.push({
-        "from": "Task",
-        "select": [
-          "Name",
-          "Number",
-          "Parent.Name",
-          "Parent.Number",
-          "Parent.ID",
-          "ToDo",
-          "Status.Name",
-          "ChangeDate",
+        'from': 'Task',
+        'select': [
+          'Name',
+          'Number',
+          'Parent.Name',
+          'Parent.Number',
+          'Parent.ID',
+          'ToDo',
+          'Status.Name',
+          'ChangeDate',
           {
-            "from": "Owners",
-            "select": [
-              "Name",
-              "ID"
+            'from': 'Owners',
+            'select': [
+              'Name',
+              'ID'
             ]
           }
         ],
-        "where": {
-          "Owners.ID": "$memberOid"
+        'where': {
+          'Owners.ID': '$memberOid'
         },
-        "filter": [
-          "AssetState=\"Active\""
+        'filter': [
+          'AssetState=\'Active\''
         ],
-        "sort": [
-          "+Order"
+        'sort': [
+          '+Order'
         ],
-        "comments": "change the nickname below to search for tasks assigned to different people.",
-        "with": {
-          "$memberOid": oid
+        'comments': 'change the nickname below to search for tasks assigned to different people.',
+        'with': {
+          '$memberOid': oid
         }
       });
       query.push({
-        "from": "Member",
-        "select": [
-          "Name",
-          "Nickname"
+        'from': 'Member',
+        'select': [
+          'Name',
+          'Nickname'
         ],
-        "where": {
-          "ID": oid
+        'where': {
+          'ID': oid
         }
       });
     });
@@ -202,7 +206,7 @@ exports.listFlaggedTasks = function (req, res) {
                   prev += ', ';
                 }
                 return prev + cur.Name + '(' + cur._oid + ')';
-              }, "");
+              }, '');
 
               task.ChangeTimeAgo = timeago(new Date(task.ChangeDate));
 
@@ -228,15 +232,15 @@ exports.listFlaggedTasks = function (req, res) {
 }
 
 exports.linksForUser = function (req, res) {
-  res.locals.query = req.url.substr((req.url.indexOf("?") !== -1)? req.url.indexOf("?"): req.url.length);
+  res.locals.query = req.url.substr((req.url.indexOf('?') !== -1) ? req.url.indexOf('?') : req.url.length);
   v1Query({
-    "from": "Member",
-    "select": [
-      "Name",
-      "Nickname"
+    'from': 'Member',
+    'select': [
+      'Name',
+      'Nickname'
     ],
-    "where": {
-      "ID": req.params.userId
+    'where': {
+      'ID': req.params.userId
     }
   }).end(function (err, queryRes) {
     if (!err) {
@@ -262,24 +266,24 @@ exports.postList = function (req, res) {
 function historyQuery(oid) {
   debug('historyQuery>', oid);
   return {
-    "from": "Member",
-    "select": [
-      "Name",
+    'from': 'Member',
+    'select': [
+      'Name',
       {
-        "from": "Activity",
-        "select": [
+        'from': 'Activity',
+        'select': [
           {
-            "from": "History",
-            "select": [
-              "ChangeDate",
-              "UserAgent"
+            'from': 'History',
+            'select': [
+              'ChangeDate',
+              'UserAgent'
             ]
           }
         ]
       }
     ],
-    "where": {
-      "ID": oid
+    'where': {
+      'ID': oid
     }
   };
 }
@@ -314,30 +318,35 @@ var processMemberActivityHistoryResults = function () {
 
   return function processMemberActivityHistoryResults(json) {
     var historyData = [];
-    debug("Data", JSON.stringify(json, null, ' '));
+    debug('Data', JSON.stringify(json, null, ' '));
     var results = [];
-    if (json[0]["Activity"].length > 0) {
-      results = json[0]["Activity"][0]["History"].slice();
+    if (json[0]['Activity'].length > 0) {
+      results = json[0]['Activity'][0]['History'].slice();
     }
 
     while (results.length > 0) {
       var entry = results.shift();
-      delete entry["_oid"];
+      delete entry['_oid'];
       if (entry.UserAgent === null) {
-        entry.agentSummary = "Probably via API"
+        entry.agentSummary = 'Probably via API'
       } else {
         uaParser.setUA(entry.UserAgent).getResult();
-        entry.agentSummary = util.format('%s %s on %s', uaParser.getBrowser().name, uaParser.getBrowser().major, uaParser.getOS().name);
+        entry.agentSummary = util.format('%s %s on %s',
+          uaParser.getBrowser().name, uaParser.getBrowser().major, uaParser.getOS().name);
       }
       entry.moment = moment(entry.ChangeDate);
-      debug("Parsed %s as %s", entry.ChangeDate, entry.moment.format());
-      debug("Parsed %s as %s", entry.UserAgent, entry.agentSummary);
+      debug('Parsed %s as %s', entry.ChangeDate, entry.moment.format());
+      debug('Parsed %s as %s', entry.UserAgent, entry.agentSummary);
 
       historyData.push(entry);
     }
     historyData.sort(function (a, b) {
-      if (a.moment.isAfter(b.moment)) return -1;
-      if (a.moment.isSame(b.moment)) return 0;
+      if (a.moment.isAfter(b.moment)) {
+        return -1;
+      }
+      if (a.moment.isSame(b.moment)) {
+        return 0;
+      }
       return 1;
     });
     return historyData;
@@ -349,11 +358,15 @@ function createHistogram(historyData) {
   var currentHistBox = 0;
 
   historyData.forEach(function (entry) {
-    if (currentHistBox === histogram.length) return;
+    if (currentHistBox === histogram.length) {
+      return;
+    }
 
     while (histogram[currentHistBox].earliest.isAfter(entry.moment)) {
       currentHistBox++;
-      if (currentHistBox === histogram.length) return;
+      if (currentHistBox === histogram.length) {
+        return;
+      }
     }
     if (currentHistBox < histogram.length) {
       histogram[currentHistBox].count++;
@@ -404,7 +417,7 @@ function processMemberResultIntoViewData(memberJson) {
 exports.listUserAccessHistory = function (req, res) {
   debug('listAccessHistory> %s', req.params.id);
 
-  var query = [ historyQuery(req.params.id) ];
+  var query = [historyQuery(req.params.id)];
 
   v1Query(query).end(function (err, queryRes) {
     if (!err) {
@@ -430,10 +443,12 @@ function createHistogramBoxes() {
   for (var x = 1; x < 14; ++x) {
     var thisMoment = moment().startOf('day').subtract(x, 'days');
     var boxName;
-    if (thisMoment.day() === 0) continue; // Skip Sundays
+    if (thisMoment.day() === 0) {
+      continue; // Skip Sundays
+    }
     if (thisMoment.day() === 6) {
       // Saturday
-      boxName = thisMoment.format("[Weekend of] ddd [the] Do");
+      boxName = thisMoment.format('[Weekend of] ddd [the] Do');
     } else {
       boxName = thisMoment.format('ddd [the] Do (') + thisMoment.from(histogram[0].earliest) + ')'
     }

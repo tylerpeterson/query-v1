@@ -30,7 +30,7 @@ request
       });
       debug(analyzer.summary());
     } else {
-      debug("failed to get data", err);
+      debug('failed to get data', err);
     }
   });
 

@@ -25,7 +25,7 @@ Analyzer.prototype.summary = function() {
     Object.keys(that.values[propName]).forEach(function (propValue) {
       var count = that.values[propName][propValue];
       if (count > 1) {
-        report += util.format("%s: %s, count: %d\n", propName, propValue, count);
+        report += util.format('%s: %s, count: %d\n', propName, propValue, count);
         allUnique = false;
       } else {
         uniqueValues++;
@@ -33,9 +33,9 @@ Analyzer.prototype.summary = function() {
     });
 
     if (allUnique) {
-      report += util.format("%s: all values were unique\n", propName);
+      report += util.format('%s: all values were unique\n', propName);
     } else {
-      report += util.format("%s: %d unique value(s) omitted\n", propName, uniqueValues);
+      report += util.format('%s: %d unique value(s) omitted\n', propName, uniqueValues);
     }
   });
 

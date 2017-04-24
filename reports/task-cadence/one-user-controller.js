@@ -21,10 +21,11 @@ var parseUrlParams = myUtils.parseUrlParams;
 
 exports.reportByUserId = function (req, res) {
   debug('listDailyCompletions', req.params.userId);
-  var urlParams = parseUrlParams(req.url.substr((req.url.indexOf("?") !== -1)? req.url.indexOf("?") + 1: req.url.length));
+  var urlParams = parseUrlParams(req.url.substr((req.url.indexOf('?') !== -1) ?
+    req.url.indexOf('?') + 1 : req.url.length));
 
-  var earliest = (urlParams.start)? moment(urlParams.start).subtract("days", 1): moment().subtract("days", 15);
-  var current = (urlParams.end)? moment(urlParams.end): moment();
+  var earliest = (urlParams.start) ? moment(urlParams.start).subtract('days', 1) : moment().subtract('days', 15);
+  var current = (urlParams.end) ? moment(urlParams.end) : moment();
   var labels = [];
   var queries = [
     {
@@ -80,20 +81,29 @@ exports.reportByUserId = function (req, res) {
     var data = queryRes.body.map(function (dayData, index) {
       var dayMoment = labels[index];
       scores.workDays += (function (day) {
-        var isHoliday = check_holiday(day.format("YYYY-MM-DD"));
+        var isHoliday = checkHoliday(day.format('YYYY-MM-DD'));
         if (day.isoWeekday() < 6) { // Weekday
           if (!isHoliday) {
-            if (!dontCountNextDay) { return 1; }
-            else { dontCountNextDay = false; return 0; }
+            if (!dontCountNextDay) {
+              return 1;
+            } else {
+              dontCountNextDay = false;
+              return 0;
+            }
           } else {
-            if (!dontCountNextDay) { return 0; }
-            else { dontCountNextDay = false; return 0; }
+            if (!dontCountNextDay) {
+              return 0;
+            } else {
+              dontCountNextDay = false;
+              return 0;
+            }
           }
         } else { // Saturday or Sunday
-          if (!isHoliday) { return 0; }
-          else {
+          if (!isHoliday) {
+            return 0;
+          } else {
             if (day.isoWeekday() === 6) { // Saturday holidays are taken on the preceding Friday
-              return (scores.workDays > 0)? -1: 0;
+              return (scores.workDays > 0) ? -1 : 0;
             } else if (day.isoWeekday() === 7) { // Sunday holidays are taken on the following Monday
               dontCountNextDay = true;
               return 0;
@@ -178,31 +188,37 @@ exports.reportByUserId = function (req, res) {
 };
 
 /**
- * @function check_holiday - Takes a JavaScript Date object or string, and checks to see if it is one of the 11 standard holidays.
- * @param {Date|string} dt_date - The date to check. Either a JavaScript Date object, or a string in the format YYYY-MM-DD.
- * @returns {boolean} - true if passed-in date is a holiday, false if not.
+ * @function checkHoliday - Takes a JavaScript Date object or string,
+ * and checks to see if it is one of the 11 standard holidays.
+ *
+ * @param {Date|string} dtDate - The date to check. Either a JavaScript
+ * Date object, or a string in the format YYYY-MM-DD.
+ *
+ * @returns {boolean} - true if passed-in date is a holiday, false if
+ * not.
+ *
  * @reference - https://www.softcomplex.com/forum/viewthread_2814/
-*/
-function check_holiday (dt_date) {
+ */
+function checkHoliday (dtDate) {
   // Accept either JavaScript Date, or Date-acceptable string
-  if (typeof dt_date === 'string' || dt_date instanceof String) {
-    var date_fields = dt_date.split(/[-]+/);
-    var dt_date = new Date(parseInt(date_fields[0], 10), parseInt(date_fields[1], 10) - 1, parseInt(date_fields[2], 10));
-  } else if (Object.prototype.toString.call(dt_date) !== '[object Date]') {
+  if (typeof dtDate === 'string' || dtDate instanceof String) {
+    var dateFields = dtDate.split(/[-]+/);
+    var dtDate = new Date(parseInt(dateFields[0], 10), parseInt(dateFields[1], 10) - 1, parseInt(dateFields[2], 10));
+  } else if (Object.prototype.toString.call(dtDate) !== '[object Date]') {
     return false;
   }
 
   // Holidays: Simple (month/date - no leading zeroes)
 
-  var n_date = dt_date.getDate(),
-      n_month = dt_date.getMonth() + 1;
-  var s_date1 = n_month + '/' + n_date;
+  var nDate = dtDate.getDate();
+  var nMonth = dtDate.getMonth() + 1;
+  var sDate1 = nMonth + '/' + nDate;
 
-  if (s_date1 == '1/1'    // New Year's Day
-    || s_date1 == '7/4'   // Independence Day
-    || s_date1 == '7/24'  // Pioneer Day
-    || s_date1 == '12/24' // Christmas Eve
-    || s_date1 == '12/25' // Christmas Day
+  if (sDate1 == '1/1' /* New Year's Day */ ||
+    sDate1 == '7/4' /* Independence Day */ ||
+    sDate1 == '7/24' /* Pioneer Day */ ||
+    sDate1 == '12/24' /* Christmas Eve */ ||
+    sDate1 == '12/25' /* Christmas Day */
 
   ) {
     return true;
@@ -210,30 +226,30 @@ function check_holiday (dt_date) {
 
   // Holdays: Weekday from beginning of the month (month/num/day)
 
-  var n_wday = dt_date.getDay(),
-      n_wnum = Math.floor((n_date - 1) / 7) + 1;
-  var s_date2 = n_month + '/' + n_wnum + '/' + n_wday;
+  var nWday = dtDate.getDay();
+  var nWnum = Math.floor((nDate - 1) / 7) + 1;
+  var sDate2 = nMonth + '/' + nWnum + '/' + nWday;
 
-  if (s_date2 == '1/3/1'  // Birthday of Martin Luther King, third Monday in January
-    || s_date2 == '2/3/1'  // President's Day, third Monday in February
-    || s_date2 == '9/1/1'  // Labor Day, first Monday in September
-    || s_date2 == '11/4/4' // Thanksgiving Day, fourth Thursday in November
-    || s_date2 == '11/4/5' // Black Friday, fourth Friday in November
+  if (sDate2 == '1/3/1' /* Birthday of Martin Luther King, third Monday in January */ ||
+    sDate2 == '2/3/1' /* President's Day, third Monday in February */ ||
+    sDate2 == '9/1/1' /* Labor Day, first Monday in September */ ||
+    sDate2 == '11/4/4' /* Thanksgiving Day, fourth Thursday in November */ ||
+    sDate2 == '11/4/5' /* Black Friday, fourth Friday in November */
   ) {
     return true;
   }
 
   // Holidays: Weekday number from end of the month (month/num/day)
 
-  var dt_temp = new Date (dt_date);
-  dt_temp.setDate(1);
-  dt_temp.setMonth(dt_temp.getMonth() + 1);
-  dt_temp.setDate(dt_temp.getDate() - 1);
-  n_wnum = Math.floor((dt_temp.getDate() - n_date - 1) / 7) + 1;
+  var dtTemp = new Date (dtDate);
+  dtTemp.setDate(1);
+  dtTemp.setMonth(dtTemp.getMonth() + 1);
+  dtTemp.setDate(dtTemp.getDate() - 1);
+  nWnum = Math.floor((dtTemp.getDate() - nDate - 1) / 7) + 1;
 
-  var s_date3 = n_month + '/' + n_wnum + '/' + n_wday;
+  var sDate3 = nMonth + '/' + nWnum + '/' + nWday;
 
-  if (s_date3 == '5/1/1'  // Memorial Day, last Monday in May
+  if (sDate3 == '5/1/1'  // Memorial Day, last Monday in May
   ) {
     return true;
   }

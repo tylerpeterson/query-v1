@@ -4,24 +4,24 @@ var _ = require('lodash');
 var v1Query = require('../lib/v1Query');
 var express = require('express');
 
-exports.listStoriesForTimebox = function(req, res, next){
+exports.listStoriesForTimebox = function (req, res, next) {
   var timeboxId = parseInt(req.params.timebox);
   var query = [{
-      from:"Timebox",
+      from:'Timebox',
       select:[
-        "Name"
+        'Name'
         ],
       where: {
-        "Timebox.ID":"Timebox:" + timeboxId
+        'Timebox.ID':'Timebox:' + timeboxId
       }
-    },{
-      from:"Story",
+    }, {
+      from:'Story',
       select:[
-        "Name",
-        "Estimate"
+        'Name',
+        'Estimate'
         ],
       where: {
-        "Timebox.ID":"Timebox:" + timeboxId
+        'Timebox.ID':'Timebox:' + timeboxId
       }
     }];
   debug('timeboxId', timeboxId);
