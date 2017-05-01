@@ -162,9 +162,10 @@ exports.reportByUserId = function (req, res) {
       };
     });
 
-    scores.daysWithTasksScore = numeral(scores.totalDaysWithTasks / scores.workDays).format('0%');
-    scores.meanTasksPerDay = numeral(scores.totalTasks / scores.workDays).format('0.00');
-    scores.meanEstimatedHoursPerDay = numeral(scores.totalEstimatedHours / scores.workDays).format('0.00');
+    var workDays = Math.max(1, scores.workDays);
+    scores.daysWithTasksScore = numeral(scores.totalDaysWithTasks / workDays).format('0%');
+    scores.meanTasksPerDay = numeral(scores.totalTasks / workDays).format('0.00');
+    scores.meanEstimatedHoursPerDay = numeral(scores.totalEstimatedHours / workDays).format('0.00');
     scores.totalDaysWithTasks = numeral(scores.totalDaysWithTasks).format('0.00');
     scores.totalTasks = numeral(scores.totalTasks).format('0.00');
     scores.totalEstimatedHours = numeral(scores.totalEstimatedHours).format('0.0');
