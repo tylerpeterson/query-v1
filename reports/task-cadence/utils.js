@@ -1,3 +1,5 @@
+var isHoldiay = require('../../lib/holiday');
+
 exports.normalizeOid = function (oid) {
   return oid.split(':').slice(0, 2).join(':');
 };
@@ -34,9 +36,15 @@ exports.tasksForADay = function (userId, day) {
   };
 };
 
+const SUNDAY = 0;
+const SATURDAY = 6;
+
 exports.classifyDay = function (dayMoment) {
-  var dow = dayMoment.day();
-  if (dow === 0 /* Sunday */ || dow === 6 /* Saturday */) {
+  var dayOfWeek = dayMoment.day();
+  if (dayOfWeek === SUNDAY || dayOfWeek === SATURDAY) {
+    return 'holiday';
+  }
+  if (isHoldiay(dayMoment.toDate())) {
     return 'holiday';
   }
   return dayMoment.dayOfYear() % 2 === 1 ? 'odd-day' : 'even-day';
