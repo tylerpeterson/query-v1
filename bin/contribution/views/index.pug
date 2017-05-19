@@ -1,0 +1,15 @@
+html
+  body
+    h1 Contribution Analysis
+    table
+      each row in rows
+        tr
+          td #{row.storyNumber}
+          td #{row.storyName}
+          td #{row.taskNumber}
+          td #{row.taskName}
+          td #{row.estimatedHours}
+          td #{row.ownedHours}
+          td #{row.contributionPercent}
+          td #{row.ownerCount}
+          td #{row.ownerList}
