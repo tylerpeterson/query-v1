@@ -66,9 +66,6 @@ function storyRow({number = 'TK-UNKNOWN', name = '[NAME]', owners = [], linkUrl 
   return `<tr><td>STORY<td> ${number} ${name} ${ownerSummary} $linkUrl`;
 };
 
-//debug('memberAndTasksQuery', JSON.stringify(memberAndTasksQuery, null, ' '));
-var storiesPromise;
-
 function report(req, res) {
   utils.loadCache('stories', () => {
     return utils.fetchV1(memberAndTasksQuery)
