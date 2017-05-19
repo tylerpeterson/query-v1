@@ -2,11 +2,9 @@
 
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
-var path = require('path');
-require('dotenv').config({path: path.join(__dirname, '../../.env_dev')});
 
 var debug = require('debug')('query-v1');
-var secrets = require('../../lib/load-secrets')('../client_secrets');
+var secrets = require('../../../lib/load-secrets')('../client_secrets');
 const serverBaseUri = secrets.v1ServerBaseUri;
 const queryUri = serverBaseUri + '/query.v1';
 const storyBaseUri = serverBaseUri + '/story.mvc/Summary?oidToken='
@@ -109,7 +107,7 @@ const fs = require('fs');
 
 function cacheJson(cacheName, data) {
   return new Promise((resolve, reject) => {
-    fs.writeFile(`${__dirname}/cache/${cacheName}.json`, JSON.stringify(data, null, '  '), err => {
+    fs.writeFile(`${__dirname}/../cache/${cacheName}.json`, JSON.stringify(data, null, '  '), err => {
       if (err) {
         debug(`ERROR writing ${cacheName} cache`);
         reject(err);
@@ -124,7 +122,7 @@ function cacheJson(cacheName, data) {
 function loadCache(cacheName, loadFromServer) {
   return new Promise((resolve, reject) => {
     try {
-      let data = require(`./cache/${cacheName}`);
+      let data = require(`../cache/${cacheName}`);
       debug(`Found ${cacheName} cache.`);
       resolve(data);
     } catch (e) {
@@ -251,20 +249,4 @@ function report(req, res) {
     .catch(error => debug('failed to get data', error));
 };
 
-var express = require('express');
-var http = require('http');
-var logger = require('morgan');
-var errorHandler = require('errorhandler');
-
-var app = express();
-var port = secrets.port;
-
-app.set('port', port);
-app.set('view engine', 'pug');
-app.use(logger('dev'));
-app.get('/', report);
-app.use(errorHandler());
-
-http.createServer(app).listen(app.get('port'), function () {
-  console.log('Express server listening on port ' + app.get('port'));
-});
+module.exports = report;
