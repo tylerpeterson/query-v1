@@ -20,7 +20,7 @@
     "isomorphic-fetch": "^2.2.1",
     "lodash": "3.10.1",
     "method-override": "2.3.5",
-    "moment": "2.11.1",
+    "moment": "2.11.2",
     "morgan": "1.6.1",
     "nedb": "1.7.1",
     "numeral": "1.5.3",
