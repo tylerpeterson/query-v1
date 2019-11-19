@@ -134,7 +134,7 @@ exports.reportByUserId = function (req, res) {
       debug('totalEstimatedHours', scores.totalEstimatedHours);
 
       return {
-        label: dayMoment.format('ddd (Do)'), // Day of the Week
+        label: dayMoment.format('ddd, MMM D'), // Day of the Week
         labelDetail: dayMoment.format('ll'), // full date
         clazz: classifyDay(dayMoment),
         tasks: dayData.map(function (taskData) {
