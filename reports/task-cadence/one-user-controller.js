@@ -190,7 +190,7 @@ exports.reportByUserId = function (req, res) {
 };
 
 function removeDuplicates(data) {
-  var oldCompletions = _.pluck(data.pop().tasks, 'Number').reduce(function (accumulator, current) {
+  var oldCompletions = _.map(data.pop().tasks, 'Number').reduce(function (accumulator, current) {
     accumulator[current] = true;
 
     return accumulator;

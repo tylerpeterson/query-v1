@@ -33,7 +33,7 @@ exports.list = function (req, res) {
       debug('routes/user.js:list:Nicknames SUCCESS');
       require('fs').writeFileSync('probe.DUMP', JSON.stringify(queryRes.body, null, ' '));
       var allUsers = queryRes.body[0];
-      var _oidIndex = _.indexBy(allUsers, '_oid');
+      var _oidIndex = _.keyBy(allUsers, '_oid');
 
       flaggedOidsP.then(function (flaggedOids) {
         var updatePromises = [];
@@ -49,7 +49,7 @@ exports.list = function (req, res) {
             title: 'All Users',
             users: allUsers,
             isChecked: function (oid) {
-              if (_.contains(flaggedOids, oid)) {
+              if (_.includes(flaggedOids, oid)) {
                 return 'checked';
               }
               return '';
@@ -85,7 +85,7 @@ exports.listFlagged = function (req, res) {
           title: 'Flagged Users',
           users: userData,
           isChecked: function(oid) { // TODO sort out whether to show check boxes on both pages
-            if (_.contains(flaggedOids, oid)) {
+            if (_.includes(flaggedOids, oid)) {
               return 'checked';
             }
             return '';
