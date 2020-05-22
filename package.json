@@ -40,7 +40,6 @@
     "grunt-simple-mocha": "0.4.1",
     "heroku": "^7.41.1",
     "mocha": "^7.1.2",
-    "nock": "~5.2.1",
     "rewire": "~2.5.1",
     "sinon": "~1.17.2",
     "supervisor": "^0.12.0",
