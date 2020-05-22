@@ -15,7 +15,6 @@ var secrets = require('./lib/load-secrets')('../client_secrets');
 var bodyParser = require('body-parser');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var methodOverride = require('method-override');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var errorHandler = require('errorhandler');
@@ -34,7 +33,6 @@ app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-app.use(methodOverride());
 app.use(cookieParser('your secret here'));
 app.use(session());
 
