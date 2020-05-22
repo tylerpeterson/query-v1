@@ -38,7 +38,7 @@
     "chai": "~3.4.1",
     "dotenv": "^4.0.0",
     "grunt": "^1.1.0",
-    "grunt-contrib-watch": "0.6.1",
+    "grunt-contrib-watch": "^1.1.0",
     "grunt-simple-mocha": "0.4.1",
     "heroku": "^7.41.1",
     "mocha": "^7.1.2",
