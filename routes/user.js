@@ -16,7 +16,7 @@ exports.list = function (req, res) {
   debug('routes/user.js:list: START');
   var flaggedOidsP = userService.getFlaggedOids();
 
-  res.locals.query = req.url.substr((req.url.indexOf('?') !== -1) ? req.url.indexOf('?') : req.url.length);
+  forwardTheQueryToViewLocals(req, res);
   v1Query({
       from: 'Member',
       select: [
@@ -62,6 +62,7 @@ exports.list = function (req, res) {
 
 exports.listFlagged = function (req, res) {
   debug('listFlagged>');
+  forwardTheQueryToViewLocals(req, res);
   userService.getFlaggedOids().then(function (flaggedOids) {
     debug('getFlaggedOids.then>');
     var query = flaggedOids.map(function (oid) {
@@ -486,3 +487,6 @@ function createHistogramBoxes() {
   return histogram;
 }
 
+function forwardTheQueryToViewLocals(req, res) {
+  res.locals.query = req.url.substr((req.url.indexOf('?') !== -1) ? req.url.indexOf('?') : req.url.length);
+}

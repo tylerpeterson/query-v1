@@ -21,7 +21,8 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
 <body>
-  <a id="back-link">Back to users</a>
+  <a id="back-link">Back to users</a><br/>
+  <a id="back-flagged-link">Back to flagged users</a>
   <h1>Productivity Cadence Summary for <a href="<%= user.url %>"><%= user.name %></a></h1>
   <form class="datepicker" action="?" method="get">
     <label title="Start date">From: <input type="text" name="start" id="start-date"></input></label>
@@ -178,6 +179,7 @@
     document.getElementById("print-subheading").innerHTML = "From " + startDate.format("MMM Do, YYYY") + " through " + endDate.format("MMM Do, YYYY") + " (" + <%= scores.workDays %> + " days)";
 
     document.getElementById("back-link").setAttribute("href", "/users?" + query);
+    document.getElementById("back-flagged-link").setAttribute("href", "/users/flagged?" + query);
   })();
 </script>
 
